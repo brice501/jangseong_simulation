@@ -14,12 +14,13 @@
   body{
     font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
     color:var(--ink);
-    background:linear-gradient(160deg,#ffe3f1 0%,#ffeede 100%);
-    display:flex;align-items:center;justify-content:center;min-height:100vh;padding:12px;
+    background:#fff6fb;
+    min-height:100vh;
+    overflow:hidden;
   }
   #app{
-    width:100%;max-width:960px;height:min(92vh,720px);
-    background:var(--cream);border-radius:24px;box-shadow:var(--shadow);
+    width:100vw;height:100vh;
+    background:var(--cream);border-radius:0;box-shadow:none;
     position:relative;overflow:hidden;display:flex;flex-direction:column;
   }
   .screen{position:absolute;inset:0;display:none;flex-direction:column;animation:fade .4s ease}
@@ -49,7 +50,7 @@
   #main{background:
       linear-gradient(180deg,rgba(255,255,255,.48) 0%,rgba(255,247,251,.55) 52%,rgba(255,246,251,.9) 100%),
       url("assets/backgrounds/yonsei_main.png") center/cover no-repeat;}
-  .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;z-index:3}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:24px 34px;z-index:3}
   .topbar .logo{font-weight:900;color:var(--pink-d);font-size:18px}
   .yonsei-brand{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.88);
     border:1.5px solid rgba(0,65,130,.16);border-radius:999px;padding:8px 14px;box-shadow:0 8px 22px rgba(0,38,84,.12)}
@@ -58,18 +59,18 @@
   .yonsei-text{display:flex;flex-direction:column;line-height:1.05}
   .yonsei-text b{color:#003876;font-size:15px}
   .yonsei-text span{color:#49627e;font-size:10px;font-weight:800;letter-spacing:.06em}
-  .roster{flex:1;display:flex;justify-content:center;align-items:flex-end;gap:8px;padding:76px 108px 86px 24px;overflow:hidden}
-  .char{flex:1;max-width:190px;display:flex;flex-direction:column;align-items:center;
+  .roster{flex:1;display:flex;justify-content:center;align-items:flex-end;gap:26px;padding:92px 150px 92px 70px;overflow:hidden}
+  .char{flex:1;max-width:240px;display:flex;flex-direction:column;align-items:center;
     cursor:pointer;transition:transform .18s;position:relative}
   .char:hover{transform:translateY(-8px)}
-  .char svg,.char img{width:100%;height:auto;max-height:445px;object-fit:contain;filter:drop-shadow(0 16px 18px rgba(0,0,0,.18))}
+  .char svg,.char img{width:100%;height:auto;max-height:68vh;object-fit:contain;filter:drop-shadow(0 16px 18px rgba(0,0,0,.18))}
   .char .name{font-weight:900;margin-top:4px;font-size:15px;color:#2d2430;text-shadow:0 1px 0 rgba(255,255,255,.9)}
   .char .tag{font-size:11px;color:#885b7a;margin-bottom:5px;font-weight:800}
   .aff{width:86%;height:12px;background:#ffdfec;border-radius:10px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.65)}
   .aff > i{display:block;height:100%;width:0;border-radius:10px;
     background:linear-gradient(90deg,#ff9ec4,var(--pink-d));transition:width .6s cubic-bezier(.2,.8,.2,1)}
   .aff-num{font-size:11px;color:var(--pink-d);font-weight:800;margin:2px 0 0}
-  .fab{position:absolute;right:18px;bottom:118px;display:flex;flex-direction:column;gap:10px;z-index:4}
+  .fab{position:absolute;right:34px;bottom:146px;display:flex;flex-direction:column;gap:12px;z-index:4}
 
   /* ---------- MODAL ---------- */
   .overlay{position:absolute;inset:0;background:rgba(58,43,57,.45);display:none;
@@ -115,12 +116,12 @@
   #play{background:linear-gradient(160deg,#cfe8ff,#ffe9f4)}
   .stage{flex:1;position:relative;overflow:hidden}
   .bg-illus{position:absolute;inset:0;z-index:0}
-  .bg-illus img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;opacity:.8}
-  .bg-illus::after{content:"";position:absolute;inset:0;background:rgba(255,252,254,.26);pointer-events:none}
-  .scene-chars{position:absolute;bottom:245px;left:0;right:0;display:flex;justify-content:center;
+  .bg-illus img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;opacity:.95}
+  .bg-illus::after{content:"";position:absolute;inset:0;background:rgba(255,252,254,.12);pointer-events:none}
+  .scene-chars{position:absolute;bottom:230px;left:0;right:0;display:flex;justify-content:center;
     gap:2%;z-index:1;padding:0 4%;transition:.3s}
-  .scene-chars .char{max-width:150px}
-  .scene-chars .char svg,.scene-chars .char img{max-height:330px}
+  .scene-chars .char{max-width:190px}
+  .scene-chars .char svg,.scene-chars .char img{max-height:44vh}
   .scene-chars .char.dim{opacity:.35;filter:grayscale(.4)}
   .scene-chars .char .name{color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5)}
   .dialog{position:absolute;left:0;right:0;bottom:0;z-index:5;
@@ -139,7 +140,7 @@
   #ending{background:
       linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,230,244,.78)),
       url("assets/backgrounds/yonsei_confession.png") center/cover no-repeat;
-    align-items:center;justify-content:flex-end;text-align:center;padding:24px;overflow:hidden}
+    align-items:center;justify-content:flex-end;text-align:center;padding:0;overflow:hidden}
   .ending-scene{position:relative;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center}
   .ending-scene img{height:82%;max-height:600px;width:auto;object-fit:contain;filter:drop-shadow(0 18px 22px rgba(0,0,0,.22))}
   .speech{position:absolute;top:54px;left:50%;transform:translateX(-50%);max-width:520px;
