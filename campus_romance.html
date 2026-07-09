@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>캠퍼스 로맨스 · 미연시 프로토타입</title>
+<style>
+  :root{
+    --pink:#ff7eb3; --pink-d:#ff4f8b; --cream:#fff6fb; --ink:#3a2b39;
+    --card:#ffffff; --shadow:0 10px 30px rgba(255,79,139,.18);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    color:var(--ink);
+    background:linear-gradient(160deg,#ffe3f1 0%,#ffeede 100%);
+    display:flex;align-items:center;justify-content:center;min-height:100vh;padding:12px;
+  }
+  #app{
+    width:100%;max-width:960px;height:min(92vh,720px);
+    background:var(--cream);border-radius:24px;box-shadow:var(--shadow);
+    position:relative;overflow:hidden;display:flex;flex-direction:column;
+  }
+  .screen{position:absolute;inset:0;display:none;flex-direction:column;animation:fade .4s ease}
+  .screen.active{display:flex}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---------- TITLE ---------- */
+  #title{align-items:center;justify-content:center;text-align:center;
+    background:radial-gradient(circle at 50% 30%,#fff 0%,#ffe3f1 70%);}
+  #title h1{font-size:clamp(32px,6vw,52px);margin:.2em 0;
+    background:linear-gradient(90deg,var(--pink-d),#ff9a5a);
+    -webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900;letter-spacing:-1px}
+  #title p{color:#a06;opacity:.8;margin:.2em 0 1.6em;font-size:15px}
+  .heart{font-size:60px;animation:beat 1.2s infinite}
+  @keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+
+  /* ---------- BUTTONS ---------- */
+  .btn{border:none;cursor:pointer;font-family:inherit;font-weight:700;
+    background:linear-gradient(90deg,var(--pink),var(--pink-d));color:#fff;
+    padding:14px 30px;border-radius:40px;font-size:16px;box-shadow:var(--shadow);
+    transition:transform .12s}
+  .btn:active{transform:scale(.96)}
+  .btn.ghost{background:#fff;color:var(--pink-d);border:2px solid var(--pink)}
+  .btn.small{padding:10px 18px;font-size:14px}
+
+  /* ---------- MAIN ---------- */
+  #main{background:
+      linear-gradient(180deg,rgba(255,255,255,.48) 0%,rgba(255,247,251,.55) 52%,rgba(255,246,251,.9) 100%),
+      url("assets/backgrounds/yonsei_main.png") center/cover no-repeat;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;z-index:3}
+  .topbar .logo{font-weight:900;color:var(--pink-d);font-size:18px}
+  .yonsei-brand{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.88);
+    border:1.5px solid rgba(0,65,130,.16);border-radius:999px;padding:8px 14px;box-shadow:0 8px 22px rgba(0,38,84,.12)}
+  .yonsei-mark{width:34px;height:34px;border-radius:50%;background:#003876;color:#fff;
+    display:grid;place-items:center;font-weight:950;font-family:Georgia,serif}
+  .yonsei-text{display:flex;flex-direction:column;line-height:1.05}
+  .yonsei-text b{color:#003876;font-size:15px}
+  .yonsei-text span{color:#49627e;font-size:10px;font-weight:800;letter-spacing:.06em}
+  .roster{flex:1;display:flex;justify-content:center;align-items:flex-end;gap:8px;padding:76px 108px 86px 24px;overflow:hidden}
+  .char{flex:1;max-width:190px;display:flex;flex-direction:column;align-items:center;
+    cursor:pointer;transition:transform .18s;position:relative}
+  .char:hover{transform:translateY(-8px)}
+  .char svg,.char img{width:100%;height:auto;max-height:445px;object-fit:contain;filter:drop-shadow(0 16px 18px rgba(0,0,0,.18))}
+  .char .name{font-weight:900;margin-top:4px;font-size:15px;color:#2d2430;text-shadow:0 1px 0 rgba(255,255,255,.9)}
+  .char .tag{font-size:11px;color:#885b7a;margin-bottom:5px;font-weight:800}
+  .aff{width:86%;height:12px;background:#ffdfec;border-radius:10px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.65)}
+  .aff > i{display:block;height:100%;width:0;border-radius:10px;
+    background:linear-gradient(90deg,#ff9ec4,var(--pink-d));transition:width .6s cubic-bezier(.2,.8,.2,1)}
+  .aff-num{font-size:11px;color:var(--pink-d);font-weight:800;margin:2px 0 0}
+  .fab{position:absolute;right:18px;bottom:118px;display:flex;flex-direction:column;gap:10px;z-index:4}
+
+  /* ---------- MODAL ---------- */
+  .overlay{position:absolute;inset:0;background:rgba(58,43,57,.45);display:none;
+    align-items:center;justify-content:center;padding:18px;z-index:20}
+  .overlay.active{display:flex;animation:fade .25s}
+  .panel{background:#fff;width:100%;max-width:640px;max-height:88%;overflow:auto;
+    border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+  .panel h2{margin:.1em 0 .6em;color:var(--pink-d)}
+  .x{float:right;border:none;background:#ffe3f1;color:var(--pink-d);width:34px;height:34px;
+    border-radius:50%;font-size:18px;cursor:pointer;font-weight:800}
+
+  /* status cards */
+  .stat-card{display:flex;gap:14px;background:#fff6fb;border:1.5px solid #ffe0ee;
+    border-radius:16px;padding:12px;margin-bottom:12px}
+  .stat-card svg,.stat-card img{width:96px;max-height:150px;height:auto;flex-shrink:0;object-fit:contain}
+  .stat-card .info{font-size:13px;line-height:1.55}
+  .stat-card .info b{color:var(--pink-d)}
+  .mbti{display:inline-block;background:var(--pink);color:#fff;border-radius:8px;
+    padding:1px 8px;font-size:12px;font-weight:800;margin-left:6px}
+  .dm-btn{margin-top:8px;border:none;border-radius:999px;padding:8px 14px;background:#003876;color:#fff;
+    font-family:inherit;font-weight:900;cursor:pointer}
+  .dm-box{display:flex;flex-direction:column;gap:10px;min-height:260px}
+  .dm-log{background:#f7f9ff;border:1.5px solid #dce8ff;border-radius:16px;padding:12px;
+    min-height:180px;max-height:310px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+  .bubble{max-width:78%;padding:9px 12px;border-radius:16px;font-size:13px;line-height:1.45}
+  .bubble.me{align-self:flex-end;background:#ff7eb3;color:#fff;border-bottom-right-radius:4px}
+  .bubble.him{align-self:flex-start;background:#fff;color:#322;border:1px solid #e8def0;border-bottom-left-radius:4px}
+  .dm-input{display:flex;gap:8px}
+  .dm-input input{flex:1;border:1.5px solid #ffcfe4;border-radius:999px;padding:12px 14px;font-family:inherit}
+
+  /* quests */
+  .qlist{display:grid;grid-template-columns:1fr;gap:10px}
+  .qitem{display:flex;align-items:center;gap:12px;background:#fff6fb;border:1.5px solid #ffe0ee;
+    border-radius:14px;padding:12px 14px;cursor:pointer;transition:.15s}
+  .qitem:hover{background:#ffe9f4;transform:translateX(4px)}
+  .qitem .ico{font-size:26px}
+  .qitem .qt{font-weight:800;font-size:15px}
+  .qitem .qd{font-size:12px;color:#a07}
+  .qitem.done{opacity:.5}
+  .qitem.done::after{content:'완료 ✓';margin-left:auto;color:#7bbf6a;font-weight:800;font-size:12px}
+
+  /* ---------- QUEST PLAY ---------- */
+  #play{background:linear-gradient(160deg,#cfe8ff,#ffe9f4)}
+  .stage{flex:1;position:relative;overflow:hidden}
+  .bg-illus{position:absolute;inset:0;z-index:0}
+  .bg-illus img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;opacity:.8}
+  .bg-illus::after{content:"";position:absolute;inset:0;background:rgba(255,252,254,.26);pointer-events:none}
+  .scene-chars{position:absolute;bottom:245px;left:0;right:0;display:flex;justify-content:center;
+    gap:2%;z-index:1;padding:0 4%;transition:.3s}
+  .scene-chars .char{max-width:150px}
+  .scene-chars .char svg,.scene-chars .char img{max-height:330px}
+  .scene-chars .char.dim{opacity:.35;filter:grayscale(.4)}
+  .scene-chars .char .name{color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+  .dialog{position:absolute;left:0;right:0;bottom:0;z-index:5;
+    background:rgba(255,255,255,.96);border-top:3px solid var(--pink);
+    padding:16px 20px 18px;min-height:150px}
+  .dialog .who{font-weight:900;color:var(--pink-d);margin-bottom:4px}
+  .dialog .line{font-size:15px;line-height:1.6;min-height:48px}
+  .choices{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .choice{text-align:left;background:#fff6fb;border:1.5px solid #ffcfe4;border-radius:12px;
+    padding:11px 14px;cursor:pointer;font-family:inherit;font-size:14px;transition:.15s}
+  .choice:hover{background:#ffe3f1;border-color:var(--pink)}
+  .qhead{position:absolute;top:12px;left:14px;z-index:5;background:rgba(255,255,255,.9);
+    border-radius:30px;padding:6px 16px;font-weight:800;color:var(--pink-d);font-size:13px}
+
+  /* ---------- ENDING ---------- */
+  #ending{background:
+      linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,230,244,.78)),
+      url("assets/backgrounds/yonsei_confession.png") center/cover no-repeat;
+    align-items:center;justify-content:flex-end;text-align:center;padding:24px;overflow:hidden}
+  .ending-scene{position:relative;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center}
+  .ending-scene img{height:82%;max-height:600px;width:auto;object-fit:contain;filter:drop-shadow(0 18px 22px rgba(0,0,0,.22))}
+  .speech{position:absolute;top:54px;left:50%;transform:translateX(-50%);max-width:520px;
+    background:rgba(255,255,255,.96);border:3px solid var(--pink);border-radius:24px;padding:18px 22px;
+    color:#5a2444;font-size:18px;line-height:1.65;font-weight:800;box-shadow:var(--shadow)}
+  .speech:after{content:"";position:absolute;bottom:-18px;left:50%;border-width:18px 14px 0 14px;border-style:solid;
+    border-color:var(--pink) transparent transparent transparent}
+  #ending .who{position:absolute;bottom:82px;left:50%;transform:translateX(-50%);font-size:22px;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.45)}
+  #ending .end-actions{position:absolute;bottom:24px;left:0;right:0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .fall{position:absolute;top:-30px;font-size:22px;animation:fall linear infinite;z-index:0}
+  @keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+
+  .toast{position:absolute;top:60px;left:50%;transform:translateX(-50%);z-index:30;
+    background:var(--ink);color:#fff;padding:10px 18px;border-radius:30px;font-weight:700;
+    font-size:14px;opacity:0;transition:.3s;pointer-events:none}
+  .toast.show{opacity:1;top:70px}
+  @media(max-width:560px){
+    .char .tag{display:none}
+    .stat-card{flex-direction:column;align-items:center;text-align:center}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- TITLE -->
+  <section class="screen active" id="title">
+    <div class="heart">💗</div>
+    <h1>캠퍼스 로맨스</h1>
+    <p>설레는 대학 생활, 네 명의 그 사람 중 누구와 이어질까?</p>
+    <button class="btn" onclick="go('main')">게임 시작 ▶</button>
+  </section>
+
+  <!-- MAIN -->
+  <section class="screen" id="main">
+    <div class="topbar">
+      <div class="yonsei-brand" aria-label="연세대학교">
+        <div class="yonsei-mark">Y</div>
+        <div class="yonsei-text"><b>연세대학교</b><span>YONSEI CAMPUS ROMANCE</span></div>
+      </div>
+      <button class="btn ghost small" onclick="resetGame()">처음부터</button>
+    </div>
+    <div class="roster" id="roster"></div>
+    <div class="fab">
+      <button class="btn" onclick="openQuests()">📋 퀘스트</button>
+      <button class="btn ghost" onclick="openStatus()">💬 상태창</button>
+      <button class="btn" onclick="openDMPicker()" style="background:linear-gradient(90deg,#3a6fd8,#003876)">💌 DM</button>
+    </div>
+  </section>
+
+  <!-- QUEST PLAY -->
+  <section class="screen" id="play">
+    <div class="stage">
+      <div class="bg-illus" id="playBg"></div>
+      <div class="qhead" id="qhead"></div>
+      <div class="scene-chars" id="sceneChars"></div>
+      <div class="dialog">
+        <div class="who" id="dWho"></div>
+        <div class="line" id="dLine"></div>
+        <div class="choices" id="dChoices"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENDING -->
+  <section class="screen" id="ending"></section>
+
+  <!-- OVERLAYS -->
+  <div class="overlay" id="ovStatus">
+    <div class="panel">
+      <button class="x" onclick="close_('ovStatus')">×</button>
+      <h2>💬 상태창 · 남주 소개</h2>
+      <div id="statusList"></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="ovQuest">
+    <div class="panel">
+      <button class="x" onclick="close_('ovQuest')">×</button>
+      <h2>📋 퀘스트</h2>
+      <p style="font-size:13px;color:#a07;margin-top:-4px">퀘스트는 순서대로 열려요. 하나 끝내면 다음 퀘스트가 알림으로 짠! 하고 생깁니다. (100 달성 시 고백 엔딩!)</p>
+      <div class="qlist" id="questList"></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="ovDMPick">
+    <div class="panel">
+      <button class="x" onclick="close_('ovDMPick')">×</button>
+      <h2>💌 누구에게 DM 보낼까?</h2>
+      <div id="dmPickList" class="qlist"></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="ovDM">
+    <div class="panel">
+      <button class="x" onclick="close_('ovDM')">×</button>
+      <h2 id="dmTitle">💌 DM</h2>
+      <div class="dm-box">
+        <div class="dm-log" id="dmLog"></div>
+        <div class="dm-input">
+          <input id="dmText" placeholder="메시지 입력하기" onkeydown="if(event.key==='Enter')sendDM()">
+          <button class="btn small" onclick="sendDM()">보내기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ============================================================
+   캐릭터 SVG 아트 (오리지널 · 웹툰풍 스타일)
+   ※ 실제 일러스트로 교체 시 이 함수의 반환값만 <img>로 바꾸면 됨
+   ============================================================ */
+/* ▼▼▼ 실제 일러스트를 넣으려면 여기 경로만 채우세요 ▼▼▼
+   - HTML 파일과 같은 폴더에 'images' 폴더를 만들고 그 안에 그림을 넣으면 됩니다.
+   - 투명 배경 PNG를 권장합니다. 비워두면("") 기존 SVG가 그대로 쓰입니다. */
+const CHAR_IMG={
+  seojun: "assets/characters/seojun.png",
+  taeo:   "assets/characters/taeo.png",
+  haneul: "assets/characters/haneul.png",
+  doyoon: "assets/characters/doyoon.png"
+};
+/* ▲▲▲ 여기까지만 수정하면 그림이 교체됩니다 ▲▲▲ */
+
+function art(id){
+  if(CHAR_IMG[id]){
+    return `<img src="${CHAR_IMG[id]}" alt="${id}">`;
+  }
+  const A={
+  // 1) 서준 — 다정, 내림머리, 훈훈, 따뜻한 톤
+  seojun:`<svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="s_sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe6d2"/><stop offset="1" stop-color="#ffd6bd"/></linearGradient></defs>
+    <path d="M55 320 Q60 235 100 232 Q140 235 145 320Z" fill="#f4c98a"/>
+    <path d="M60 320 Q65 250 100 246 Q135 250 140 320Z" fill="#fbe3c0"/>
+    <rect x="92" y="205" width="16" height="34" rx="7" fill="url(#s_sk)"/>
+    <ellipse cx="100" cy="150" rx="52" ry="58" fill="url(#s_sk)"/>
+    <path d="M64 108 Q100 60 136 108 Q140 132 128 150 Q126 118 100 112 Q74 118 72 150 Q60 132 64 108Z" fill="#7a4b2b"/>
+    <path d="M64 110 Q78 96 96 104 Q84 120 78 140 Q66 128 64 110Z" fill="#8a5734"/>
+    <path d="M104 104 Q122 96 136 110 Q134 128 122 140 Q116 120 104 104Z" fill="#8a5734"/>
+    <path d="M72 150 Q73 122 100 116 Q127 122 128 150 Q118 128 100 126 Q82 128 72 150Z" fill="#6b3f22"/>
+    <path d="M78 138 q10 -6 20 0" stroke="#6b3f22" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M102 138 q10 -6 20 0" stroke="#6b3f22" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <ellipse cx="86" cy="152" rx="6.5" ry="8" fill="#5b3a26"/><circle cx="88" cy="150" r="2" fill="#fff"/>
+    <ellipse cx="114" cy="152" rx="6.5" ry="8" fill="#5b3a26"/><circle cx="116" cy="150" r="2" fill="#fff"/>
+    <ellipse cx="76" cy="166" rx="7" ry="4" fill="#ffb59b" opacity=".6"/>
+    <ellipse cx="124" cy="166" rx="7" ry="4" fill="#ffb59b" opacity=".6"/>
+    <path d="M99 156 l-3 8 h6Z" fill="#eab38f"/>
+    <path d="M88 178 q12 10 24 0" stroke="#c86b4f" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>`,
+  // 2) 태오 — 나쁜남자, 올림머리, 강한 인상, 쿨톤
+  taeo:`<svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="t_sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe3cf"/><stop offset="1" stop-color="#f6ccb0"/></linearGradient></defs>
+    <path d="M50 320 Q55 232 100 228 Q145 232 150 320Z" fill="#2b2b33"/>
+    <path d="M74 232 L100 262 L126 232 L118 320 H82Z" fill="#3a3a45"/>
+    <path d="M92 208 h16 v30 l-8 8 -8 -8Z" fill="url(#t_sk)"/>
+    <ellipse cx="100" cy="150" rx="51" ry="57" fill="url(#t_sk)"/>
+    <path d="M62 118 Q70 66 100 70 Q130 66 138 118 Q120 96 100 96 Q80 96 62 118Z" fill="#17171c"/>
+    <path d="M64 116 Q88 84 100 96 Q78 100 70 128 Q64 124 64 116Z" fill="#0e0e12"/>
+    <path d="M136 116 Q112 84 100 96 Q122 100 130 128 Q136 124 136 116Z" fill="#0e0e12"/>
+    <path d="M74 128 q12 -3 22 3" stroke="#1b1b20" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M104 131 q10 -6 22 -3" stroke="#1b1b20" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M76 150 q10 -4 19 -1" stroke="#3a2a24" stroke-width="2" fill="none"/>
+    <ellipse cx="85" cy="150" rx="6" ry="7" fill="#4a2f3a"/><circle cx="87" cy="148" r="1.8" fill="#fff"/>
+    <ellipse cx="115" cy="150" rx="6" ry="7" fill="#4a2f3a"/><circle cx="117" cy="148" r="1.8" fill="#fff"/>
+    <path d="M98 154 l-3 9 h6Z" fill="#e0a683"/>
+    <path d="M86 176 q14 6 26 -2" stroke="#a84e4e" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M132 156 l7 -3 -4 7Z" fill="#c0c0c8"/>
+  </svg>`,
+  // 3) 하늘 — 엉뚱, 스트릿 패션, 개성, 밝은 애쉬 헤어 + 비니
+  haneul:`<svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="h_sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe6d4"/><stop offset="1" stop-color="#ffd3ba"/></linearGradient></defs>
+    <path d="M48 320 Q52 236 100 232 Q148 236 152 320Z" fill="#8a5cff"/>
+    <path d="M70 236 Q100 224 130 236 L124 300 H76Z" fill="#b39aff"/>
+    <circle cx="100" cy="270" r="6" fill="#fff"/><circle cx="100" cy="292" r="6" fill="#fff"/>
+    <rect x="92" y="207" width="16" height="30" rx="7" fill="url(#h_sk)"/>
+    <ellipse cx="100" cy="150" rx="51" ry="57" fill="url(#h_sk)"/>
+    <path d="M66 122 Q72 80 100 84 Q128 80 134 122 Q116 104 100 106 Q84 104 66 122Z" fill="#cfd6e4"/>
+    <path d="M78 118 l6 14 6 -12 6 14 6 -12 6 12" stroke="#aeb7cc" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M56 74 Q100 52 144 74 Q150 96 144 104 Q100 88 56 104 Q50 96 56 74Z" fill="#ff5aa5"/>
+    <rect x="54" y="98" width="92" height="12" rx="6" fill="#ff8dc2"/>
+    <path d="M76 132 q9 -4 18 0" stroke="#8a93a8" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M106 132 q9 -4 18 0" stroke="#8a93a8" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="85" cy="150" r="7.5" fill="#4a7bd0"/><circle cx="87" cy="148" r="2.4" fill="#fff"/>
+    <circle cx="115" cy="150" r="7.5" fill="#4a7bd0"/><circle cx="117" cy="148" r="2.4" fill="#fff"/>
+    <ellipse cx="74" cy="165" rx="7" ry="4" fill="#ffb59b" opacity=".6"/>
+    <ellipse cx="126" cy="165" rx="7" ry="4" fill="#ffb59b" opacity=".6"/>
+    <path d="M97 156 l-3 8 h6Z" fill="#eab38f"/>
+    <path d="M88 176 q12 12 24 0" stroke="#c86b4f" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="112" cy="182" r="3" fill="#fff" stroke="#c86b4f"/>
+  </svg>`,
+  // 4) 도윤 — 재밌, 캐주얼, 친근+잘생김, 환한 미소
+  doyoon:`<svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="d_sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe6d2"/><stop offset="1" stop-color="#ffd4b8"/></linearGradient></defs>
+    <path d="M52 320 Q56 234 100 230 Q144 234 148 320Z" fill="#3d7dd6"/>
+    <path d="M84 230 Q100 250 116 230 L112 262 H88Z" fill="#fff"/>
+    <rect x="92" y="206" width="16" height="32" rx="7" fill="url(#d_sk)"/>
+    <ellipse cx="100" cy="150" rx="52" ry="57" fill="url(#d_sk)"/>
+    <path d="M62 116 Q72 66 100 70 Q128 66 138 116 Q130 96 118 100 Q112 88 100 90 Q86 88 80 102 Q70 98 62 116Z" fill="#b5642f"/>
+    <path d="M80 102 q14 -12 30 0 q6 6 4 16 q-18 -14 -38 0 q-2 -10 4 -16Z" fill="#c8763c"/>
+    <path d="M76 130 q10 -5 20 -1" stroke="#8a4a22" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path d="M104 129 q10 -4 20 1" stroke="#8a4a22" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path d="M78 150 q7 -6 15 0" stroke="#6b3f22" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M107 150 q7 -6 15 0" stroke="#6b3f22" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="85" cy="150" r="2.6" fill="#4a2f22"/><circle cx="115" cy="150" r="2.6" fill="#4a2f22"/>
+    <ellipse cx="74" cy="166" rx="8" ry="5" fill="#ff9e88" opacity=".55"/>
+    <ellipse cx="126" cy="166" rx="8" ry="5" fill="#ff9e88" opacity=".55"/>
+    <path d="M98 156 l-3 8 h6Z" fill="#eab38f"/>
+    <path d="M80 174 q20 20 40 0 q-20 8 -40 0Z" fill="#fff" stroke="#c86b4f" stroke-width="3" stroke-linejoin="round"/>
+  </svg>`
+  };
+  return A[id];
+}
+
+/* ============================================================
+   배경 일러스트 (SVG) — 퀘스트별 대학 배경
+   ============================================================ */
+function bg(kind){
+  const IMG_BG={
+    ot: "assets/backgrounds/ot.png",
+    mt: "assets/backgrounds/mt.png",
+    class: "assets/backgrounds/class.png",
+    festival: "assets/backgrounds/festival.png",
+    booth: "assets/backgrounds/booth.png"
+  };
+  if(IMG_BG[kind]){
+    return `<img src="${IMG_BG[kind]}" alt="${kind} background">`;
+  }
+  const B={
+  ot:`<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#dff0ff"/><rect y="180" width="400" height="120" fill="#cfe6d8"/>
+    <rect x="40" y="70" width="140" height="120" fill="#e9d3b0"/><rect x="220" y="60" width="150" height="130" fill="#d9c39a"/>
+    <rect x="55" y="85" width="30" height="30" fill="#a9cfe8"/><rect x="105" y="85" width="30" height="30" fill="#a9cfe8"/>
+    <rect x="238" y="78" width="34" height="34" fill="#a9cfe8"/><rect x="300" y="78" width="34" height="34" fill="#a9cfe8"/>
+    <circle cx="340" cy="45" r="26" fill="#ffe07a"/><ellipse cx="190" cy="270" rx="200" ry="40" fill="#bcdcc6"/>
+    <text x="200" y="30" font-size="15" fill="#6a8" text-anchor="middle" font-weight="bold">🎓 신입생 OT</text>
+  </svg>`,
+  mt:`<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#2a3a5e"/><circle cx="320" cy="55" r="22" fill="#fff7d6"/>
+    <polygon points="0,180 120,90 240,180" fill="#3a5a4a"/><polygon points="160,180 300,80 400,180" fill="#33513f"/>
+    <rect y="180" width="400" height="120" fill="#5a4634"/>
+    <polygon points="150,180 200,130 250,180" fill="#c98a4a"/><rect x="180" y="160" width="40" height="20" fill="#7a5230"/>
+    <ellipse cx="200" cy="235" rx="34" ry="14" fill="#ff8a3a" opacity=".8"/><ellipse cx="200" cy="230" rx="18" ry="24" fill="#ffd24a"/>
+    <text x="200" y="30" font-size="15" fill="#ffe" text-anchor="middle" font-weight="bold">🏕️ 과 MT</text>
+  </svg>`,
+  class:`<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#eef1f4"/><rect x="30" y="40" width="200" height="90" fill="#2f5d3a"/>
+    <rect x="30" y="40" width="200" height="90" fill="none" stroke="#c9a24a" stroke-width="6"/>
+    <text x="130" y="95" font-size="20" fill="#dfe" text-anchor="middle">∑ f(x)dx</text>
+    <rect y="150" width="400" height="150" fill="#d7cfc0"/>
+    <rect x="40" y="200" width="90" height="46" fill="#b98a5a"/><rect x="160" y="200" width="90" height="46" fill="#b98a5a"/><rect x="280" y="200" width="90" height="46" fill="#b98a5a"/>
+    <text x="200" y="28" font-size="15" fill="#567" text-anchor="middle" font-weight="bold">📚 강의실</text>
+  </svg>`,
+  festival:`<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#1c1440"/>
+    <circle cx="60" cy="40" r="2" fill="#fff"/><circle cx="140" cy="30" r="2" fill="#fff"/><circle cx="300" cy="50" r="2" fill="#fff"/><circle cx="360" cy="25" r="2" fill="#fff"/>
+    <rect y="150" width="400" height="150" fill="#3a2158"/>
+    <rect x="120" y="90" width="160" height="90" fill="#472a6b"/><rect x="120" y="90" width="160" height="16" fill="#ff5aa5"/>
+    <circle cx="200" cy="150" r="26" fill="#ffd24a" opacity=".85"/>
+    <rect x="70" y="120" width="14" height="60" fill="#ff8a3a"/><rect x="320" y="120" width="14" height="60" fill="#5ad2ff"/>
+    <polygon points="50,60 60,80 40,80" fill="#ff5aa5"/><polygon points="350,70 360,90 340,90" fill="#5ad2ff"/>
+    <text x="200" y="30" font-size="15" fill="#ffd" text-anchor="middle" font-weight="bold">🎪 대학 축제</text>
+  </svg>`,
+  booth:`<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#ffe9c9"/><rect y="170" width="400" height="130" fill="#e6c79a"/>
+    <rect x="60" y="70" width="280" height="30" fill="#ff5aa5"/>
+    <path d="M60 100 h280 v14 h-280Z" fill="#fff"/><path d="M60 100 l20 14 20 -14 20 14 20 -14 20 14 20 -14 20 14 20 -14 20 14 20 -14 20 14 20 -14 20 14 20 -14" fill="#ff8dc2"/>
+    <rect x="90" y="150" width="220" height="60" fill="#c98a4a"/><rect x="90" y="150" width="220" height="12" fill="#a86e34"/>
+    <circle cx="140" cy="140" r="12" fill="#ff5a5a"/><circle cx="200" cy="138" r="12" fill="#ffd24a"/><circle cx="260" cy="140" r="12" fill="#7bcf6a"/>
+    <text x="200" y="52" font-size="15" fill="#a05" text-anchor="middle" font-weight="bold">🍢 축제 부스</text>
+  </svg>`
+  };
+  return B[kind];
+}
+
+/* ============================================================
+   캐릭터 데이터
+   ============================================================ */
+const CHARS=[
+ {id:'seojun',name:'서준',tag:'다정한 선배',mbti:'INFJ',
+  desc:'모두에게 다정한 복학생 선배. 내림머리에 훈훈한 인상. 힘든 사람을 그냥 지나치지 못한다.',
+  like:'따뜻한 커피, 조용한 도서관, 남 챙기기',
+  dislike:'거짓말, 무례한 사람'},
+ {id:'taeo',name:'태오',tag:'나쁜 남자',mbti:'ESTP',
+  desc:'올림머리에 강한 인상. 무심한 듯 시크하지만 결정적인 순간엔 챙겨준다. 밴드 보컬.',
+  like:'라이브 공연, 오토바이, 솔직한 사람',
+  dislike:'가식, 우유부단함'},
+ {id:'haneul',name:'하늘',tag:'엉뚱한 아이',mbti:'ENFP',
+  desc:'스트릿 패션의 개성만점 동기. 4차원 매력에 예측불가. 미대 소속으로 그림을 그린다.',
+  like:'그래피티, 힙합, 새로운 것',
+  dislike:'뻔한 것, 지루한 규칙'},
+ {id:'doyoon',name:'도윤',tag:'분위기 메이커',mbti:'ENTP',
+  desc:'캐주얼한 옷차림에 친근하지만 잘생긴 동기. 어딜 가나 웃음이 끊이지 않는 분위기 메이커.',
+  like:'개그, 축구, 사람들과 어울리기',
+  dislike:'어색한 침묵, 진지충 소리'}
+];
+
+/* ============================================================
+   퀘스트 데이터 (상황 → 남주별 멘트 → 선택지)
+   good 선택 +25, so-so 선택 +8
+   ============================================================ */
+const QUESTS=[
+ {id:'ot',ico:'🎓',bg:'ot',title:'신입생 OT',sub:'설레는 첫 만남',
+  scene:'OT 첫날, 어색하게 앉아있는데 네 사람이 각자 말을 건다. 누구에게 다가갈까?',
+  lines:{
+   seojun:'"많이 긴장했죠? 옆자리 비었는데 여기 앉아요. 제가 챙겨줄게요."',
+   taeo:'"…혼자 왔어? 뭐, 재미없으면 나 따라 나오든가."',
+   haneul:'"우와 너 이름 뭐야? 나 방금 네 얼굴 캐리커처 그렸는데 볼래?!"',
+   doyoon:'"자자~ 어색하면 게임 한 판! 내가 진행 맡을게, 웃을 준비 됐지?"'},
+  choices:{
+   seojun:[{t:'"고마워요, 사실 좀 떨렸어요." (솔직하게)',p:25,r:'"그럴 수 있죠. 천천히 적응해요, 제가 있잖아요." 서준이 따뜻하게 웃는다.'},
+           {t:'"아, 네 뭐…" (쭈뼛)',p:8,r:'"편하게 생각해요." 서준이 부드럽게 말한다.'}],
+   taeo:[{t:'"재미없으면 진짜 나갈 거예요?" (당돌하게)',p:25,r:'태오가 픽 웃는다. "…의외네. 너 마음에 들어."'},
+         {t:'"어… 괜찮아요." (사양)',p:8,r:'"그래? 마음 바뀌면 말해." 태오가 어깨를 으쓱한다.'}],
+   haneul:[{t:'"헐 보여줘! 나 완전 궁금해!" (호응)',p:25,r:'"그치?! 우리 잘 통한다!" 하늘이 눈을 반짝인다.'},
+           {t:'"그림… 그리는구나?" (어리둥절)',p:8,r:'"응! 재밌지 않아?" 하늘이 신나서 말한다.'}],
+   doyoon:[{t:'"좋아요! 벌칙은 선배가 받기?" (받아치기)',p:25,r:'"오~ 이 친구 물건인데?" 도윤이 박장대소한다.'},
+           {t:'"게임은 좀…" (소심)',p:8,r:'"에이 뺄 거 없어~" 도윤이 웃으며 분위기를 푼다.'}]}
+ },
+ {id:'mt',ico:'🏕️',bg:'mt',title:'과 MT',sub:'밤이 깊어가는 펜션',
+  scene:'MT 밤, 모닥불 앞. 다들 흩어지고 한 사람과 단둘이 남았다. 누구와 이야기를 나눌까?',
+  lines:{
+   seojun:'"불 앞이 따뜻하죠. …춥진 않아요? 제 겉옷 걸쳐요."',
+   taeo:'"시끄러운 거 싫어서 나왔어. 근데 너 나오는 건… 나쁘지 않네."',
+   haneul:'"야야 우리 별 보자! 저기 저거 봐, 완전 반짝여! 소원 빌어!"',
+   doyoon:'"고백 타임이다~ 근데 나 진지한 얘기 하면 손발 오그라들어서 큰일 나."'},
+  choices:{
+   seojun:[{t:'겉옷을 받으며 "선배는요? 같이 껴요." ',p:25,r:'서준의 귀가 붉어진다. "…그럼, 잠깐만요."'},
+           {t:'"괜찮아요 안 추워요."',p:8,r:'"무리하지 말아요." 서준이 걱정스레 본다.'}],
+   taeo:[{t:'"나쁘지 않다니, 좋다는 뜻이죠?" (능청)',p:25,r:'태오가 시선을 피한다. "…말 잘하네, 진짜."'},
+         {t:'조용히 옆에 앉는다.',p:8,r:'태오가 슬쩍 곁눈질한다.'}],
+   haneul:[{t:'같이 눈 감고 "소원 빌었다!" ',p:25,r:'"뭐 빌었어? …나는 너 관련된 거!" 하늘이 배시시 웃는다.'},
+           {t:'"별이 예쁘긴 하다."',p:8,r:'"그치! 역시 통한다니까." 하늘이 웃는다.'}],
+   doyoon:[{t:'"오그라들어도 들어줄게요, 해봐요." ',p:25,r:'도윤이 잠깐 진지해진다. "…너 앞에선 왜 이러지, 나."'},
+           {t:'"풉, 도윤 선배 귀엽다."',p:8,r:'"귀여운 걸로 넘어가 주지~" 도윤이 웃는다.'}]}
+ },
+ {id:'class',ico:'📚',bg:'class',title:'강의실 과제',sub:'조별 과제의 위기',
+  scene:'조별 과제 마감 전날, 한 명이 잠수. 급히 도와줄 사람을 찾는데 네 사람이 반응한다.',
+  lines:{
+   seojun:'"자료 조사 부분은 내가 밤새서라도 맡을게요. 걱정 말아요."',
+   taeo:'"잠수 탄 놈은 내가 잡아올 테니, 넌 발표나 준비해."',
+   haneul:'"PPT 디자인은 맡겨! 심심한 발표는 죄악이야, 예술로 만들어줄게!"',
+   doyoon:'"발표는 내 무대지~ 웃기면서 A+ 받게 만들어줄게, 믿어봐!"'},
+  choices:{
+   seojun:[{t:'"그럼 저도 같이 밤새요. 혼자 두면 안 되죠." ',p:25,r:'"…같이 있어 주면 든든하죠." 서준이 미소 짓는다.'},
+           {t:'"고마워요, 부탁해요."',p:8,r:'"맡겨만 둬요." 서준이 끄덕인다.'}],
+   taeo:[{t:'"발표는 자신 있어요. 대신 커피는 제가 살게요." ',p:25,r:'"…쿨하네. 그런 거 좋아." 태오가 씩 웃는다.'},
+         {t:'"진짜 잡아올 수 있어요?"',p:8,r:'"나 못 하는 거 봤냐?" 태오가 자신만만하다.'}],
+   haneul:[{t:'"믿어! 대신 컨셉은 우리 둘이 같이 짜자." ',p:25,r:'"콜! 너랑 하면 밤새도 재밌겠다!" 하늘이 신났다.'},
+           {t:'"디자인 부탁해."',p:8,r:'"오케이 예술 나갑니다~" 하늘이 붓을 든다.'}],
+   doyoon:[{t:'"그럼 대본은 같이 짜요, 도윤 선배 개그 살려서." ',p:25,r:'"우리 콤비 좋은데? 무대 위 파트너 하자." 도윤이 윙크한다.'},
+           {t:'"발표 잘 부탁해요."',p:8,r:'"A+ 각이지~" 도윤이 엄지를 든다.'}]}
+ },
+ {id:'festival',ico:'🎪',bg:'festival',title:'대학 축제',sub:'불꽃놀이 아래에서',
+  scene:'축제의 밤, 인파 속에서 손을 놓칠 뻔한 순간. 한 사람이 내 손을 잡아준다.',
+  lines:{
+   seojun:'"위험해요, 사람 많으니까… 이 손 놓지 말아요."',
+   taeo:'(말없이 손목을 잡아 끌며) "붙어 있어. 놓치면 안 되니까."',
+   haneul:'"우리 저기 포토존 가자! 인생샷 남겨야 돼, 손 꽉 잡아!"',
+   doyoon:'"자 미아 방지 손잡기~ …라고 하고 사실 그냥 잡고 싶었어."'},
+  choices:{
+   seojun:[{t:'손을 마주 잡으며 "네, 안 놓을게요." ',p:25,r:'"…이대로 조금만 더 있어요." 서준이 나직이 말한다.'},
+           {t:'"고마워요." (살짝 잡기)',p:8,r:'서준이 다정하게 걸음을 맞춘다.'}],
+   taeo:[{t:'"이렇게 잡으면… 심장 뛰잖아요." ',p:25,r:'태오가 멈칫한다. "…나도 뛰거든, 지금."'},
+         {t:'조용히 따라 걷는다.',p:8,r:'태오가 손에 힘을 준다.'}],
+   haneul:[{t:'"좋아! 제일 예쁜 컷 찍자!" ',p:25,r:'"너랑 찍은 게 제일 잘 나왔어. 배경화면 할래!" 하늘이 활짝 웃는다.'},
+           {t:'"포토존 좋지."',p:8,r:'"가자가자!" 하늘이 앞장선다.'}],
+   doyoon:[{t:'"핑계 귀엽네요. 계속 잡고 있어요 그럼." ',p:25,r:'"…들켰네. 근데 안 놓을 거야." 도윤이 붉어진다.'},
+           {t:'"풉, 웃겨요 진짜."',p:8,r:'"웃겨도 손은 안 놔~" 도윤이 웃는다.'}]}
+ },
+ {id:'booth',ico:'🍢',bg:'booth',title:'축제 부스 알바',sub:'둘만의 마감 시간',
+  scene:'주점 부스 마감. 정신없이 바쁜 와중에 한 사람과 호흡을 맞추게 된다.',
+  lines:{
+   seojun:'"무리하지 말아요. 무거운 건 내가 들게, 너는 주문만 받아요."',
+   taeo:'"손 그렇게 하면 데. 이리 줘봐, …됐어. 조심 좀 해."',
+   haneul:'"우리 부스 시그니처 만들자! 이름은 \'하늘표 폭탄전\'! 반응 대박일걸?"',
+   doyoon:'"어서오세요~! 봤지? 나만 있으면 매출 두 배야. 우리 환상의 콤비!"'},
+  choices:{
+   seojun:[{t:'"그럼 마감 끝나고 제가 밥 살게요." ',p:25,r:'"…그거 데이트 신청으로 들을게요." 서준이 웃는다.'},
+           {t:'"고마워요, 든든해요."',p:8,r:'"언제든지요." 서준이 미소 짓는다.'}],
+   taeo:[{t:'잡힌 손을 안 빼며 "…따뜻하네요." ',p:25,r:'태오가 굳는다. "…야, 반칙이야 그건."'},
+         {t:'"조심할게요." (손 빼기)',p:8,r:'태오가 무심한 척 돌아선다.'}],
+   haneul:[{t:'"하늘표 폭탄전 콜! 간판은 내가 그려줄게." ',p:25,r:'"우리 진짜 잘 맞아. 졸업하고도 뭐 같이 하자!" 하늘이 들뜬다.'},
+           {t:'"메뉴 재밌겠다."',p:8,r:'"그치?! 바로 만든다!" 하늘이 신났다.'}],
+   doyoon:[{t:'"환상의 콤비 인정. 뒤풀이도 콤비로?" ',p:25,r:'"당연하지~ 근데 뒤풀이는 둘만 어때?" 도윤이 슬쩍 웃는다.'},
+           {t:'"매출왕 인정이요."',p:8,r:'"영업왕 도윤이올시다~" 도윤이 익살맞게 웃는다.'}]}
+ }
+];
+
+/* ============================================================
+   상태 & 로직
+   ============================================================ */
+let affinity={seojun:0,taeo:0,haneul:0,doyoon:0};
+let doneQuests={};
+let cur={};  // 진행 중 퀘스트 상태
+
+const $=id=>document.getElementById(id);
+function go(s){document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));$(s).classList.add('active');}
+function open_(id){$(id).classList.add('active');}
+function close_(id){$(id).classList.remove('active');}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
+
+/* 메인 화면 렌더 */
+function renderMain(){
+  const r=$('roster');r.innerHTML='';
+  CHARS.forEach(c=>{
+    const pct=Math.min(100,affinity[c.id]);
+    const d=document.createElement('div');
+    d.className='char';
+    d.innerHTML=`${art(c.id)}
+      <div class="name">${c.name}</div>
+      <div class="tag">${c.tag}</div>
+      <div class="aff"><i style="width:${pct}%"></i></div>
+      <div class="aff-num">💗 ${affinity[c.id]} / 100</div>`;
+    d.onclick=()=>{openStatus(c.id);};
+    r.appendChild(d);
+  });
+}
+
+/* 상태창 */
+function openStatus(focus){
+  const box=$('statusList');box.innerHTML='';
+  CHARS.forEach(c=>{
+    const card=document.createElement('div');
+    card.className='stat-card';
+    card.innerHTML=`<div>${art(c.id)}</div>
+      <div class="info">
+        <b>${c.name}</b> · ${c.tag}<span class="mbti">${c.mbti}</span><br>
+        ${c.desc}<br>
+        <b>좋아하는 것</b> : ${c.like}<br>
+        <b>싫어하는 것</b> : ${c.dislike}<br>
+        <b>현재 호감도</b> : 💗 ${affinity[c.id]} / 100
+      </div>`;
+    box.appendChild(card);
+  });
+  open_('ovStatus');
+}
+
+/* 퀘스트 목록 */
+function openQuests(){
+  const list=$('questList');list.innerHTML='';
+  QUESTS.forEach(q=>{
+    const it=document.createElement('div');
+    it.className='qitem'+(doneQuests[q.id]?' done':'');
+    it.innerHTML=`<div class="ico">${q.ico}</div>
+      <div><div class="qt">${q.title}</div><div class="qd">${q.sub}</div></div>`;
+    it.onclick=()=>{close_('ovQuest');startQuest(q.id);};
+    list.appendChild(it);
+  });
+  open_('ovQuest');
+}
+
+/* 퀘스트 시작 → 상황 제시 */
+function startQuest(qid){
+  const q=QUESTS.find(x=>x.id===qid);
+  cur={q,step:'situation',picked:null};
+  $('playBg').innerHTML=bg(q.bg);
+  $('qhead').textContent=`${q.ico} ${q.title}`;
+  renderScene(null);
+  $('dWho').textContent='상황';
+  $('dLine').textContent=q.scene;
+  const ch=$('dChoices');ch.innerHTML='';
+  CHARS.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='choice';
+    b.innerHTML=`<b>${c.name}</b> — ${q.lines[c.id]}`;
+    b.onclick=()=>pickChar(c.id);
+    ch.appendChild(b);
+  });
+  go('play');
+}
+
+/* 무대 위 캐릭터 (선택 시 나머지 흐리게) */
+function renderScene(active){
+  const s=$('sceneChars');s.innerHTML='';
+  CHARS.forEach(c=>{
+    const d=document.createElement('div');
+    d.className='char'+(active&&active!==c.id?' dim':'');
+    d.innerHTML=`${art(c.id)}<div class="name">${c.name}</div>`;
+    s.appendChild(d);
+  });
+}
+
+/* 남주 선택 → 개별 선택지 */
+function pickChar(cid){
+  const q=cur.q;cur.picked=cid;
+  renderScene(cid);
+  const c=CHARS.find(x=>x.id===cid);
+  $('dWho').textContent=c.name;
+  $('dLine').textContent=q.lines[cid];
+  const ch=$('dChoices');ch.innerHTML='';
+  q.choices[cid].forEach(opt=>{
+    const b=document.createElement('button');
+    b.className='choice';
+    b.textContent=opt.t;
+    b.onclick=()=>resolveChoice(cid,opt);
+    ch.appendChild(b);
+  });
+}
+
+/* 선택 결과 → 호감도 반영 */
+function resolveChoice(cid,opt){
+  const c=CHARS.find(x=>x.id===cid);
+  $('dWho').textContent=c.name;
+  $('dLine').textContent=opt.r;
+  affinity[cid]=Math.min(100,affinity[cid]+opt.p);
+  doneQuests[cur.q.id]=true;
+  const ch=$('dChoices');ch.innerHTML='';
+  const b=document.createElement('button');
+  b.className='btn';b.style.marginTop='6px';
+  b.textContent=`💗 +${opt.p}  ·  메인으로`;
+  b.onclick=()=>{
+    if(affinity[cid]>=100){ ending(cid); }
+    else { renderMain(); go('main'); toast(`${c.name} 호감도 +${opt.p}!`); }
+  };
+  ch.appendChild(b);
+}
+
+/* 엔딩 */
+function ending(cid){
+  const c=CHARS.find(x=>x.id===cid);
+  const conf={
+   seojun:'"…나 사실, OT 첫날부터 너만 눈에 들어왔어요. 이제 선배 말고, 남자친구로 옆에 있어도 될까요?"',
+   taeo:'"나 이런 말 잘 안 하는 거 알지. …너 아니면 안 되겠어. 나랑, 사귀자."',
+   haneul:'"내 모든 그림에 요즘 너만 그려. 너는 내 뮤즈야 — 우리, 연인 하자! 어때?!"',
+   doyoon:'"농담 다 빼고 딱 한 마디만 할게. …좋아해. 웃음 말고 설렘도 내가 책임질게, 나랑 만나자."'
+  }[cid];
+  const e=$('ending');
+  e.innerHTML=`${art(cid)}
+    <div class="who">${c.name} 엔딩 · 💗 100</div>
+    <div class="conf">${conf}</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+      <button class="btn" onclick="acceptEnd('${c.name}')">"응, 나도 좋아해요" 💗</button>
+      <button class="btn ghost" onclick="resetGame()">처음부터</button>
+    </div>`;
+  // 하트 낙하 연출
+  for(let i=0;i<16;i++){
+    const h=document.createElement('div');h.className='fall';
+    h.textContent=['💗','💕','💖','✨'][i%4];
+    h.style.left=(Math.random()*100)+'%';
+    h.style.animationDuration=(3+Math.random()*3)+'s';
+    h.style.animationDelay=(Math.random()*2)+'s';
+    e.appendChild(h);
+  }
+  go('ending');
+}
+
+function acceptEnd(name){
+  toast(`🎉 ${name}와 연애 성공! 축하해요!`);
+}
+
+function resetGame(){
+  affinity={seojun:0,taeo:0,haneul:0,doyoon:0};
+  doneQuests={};
+  renderMain();
+  go('title');
+}
+
+/* 초기화 */
+renderMain();
+const previewMode=new URLSearchParams(location.search).get('preview');
+if(previewMode==='main'){
+  go('main');
+}else if(QUESTS.some(q=>q.id===previewMode)){
+  startQuest(previewMode);
+}
+</script>
+<script>
+/* ============================================================
+   v2 override · 연세대 캠퍼스 / 전신샷 / 순차 퀘스트 / DM
+   ============================================================ */
+Object.assign(CHAR_IMG,{
+  seojun:"assets/characters/jisung.png",
+  taeo:"assets/characters/jinha.png",
+  haneul:"assets/characters/chanhyung.png",
+  doyoon:"assets/characters/seongho.png"
+});
+
+const NAME_MAP={seojun:"형규",taeo:"진하",haneul:"찬형",doyoon:"지성"};
+const PROFILE={
+  seojun:{tag:"다정한 선배",mbti:"INFJ",dm:"다정하고 조심스럽게 챙겨주는 말투",emoji:"☕"},
+  taeo:{tag:"시크한 밴드 보컬",mbti:"ESTP",dm:"짧고 무심한데 은근 설레게 챙기는 말투",emoji:"🎸"},
+  haneul:{tag:"엉뚱한 미대생",mbti:"ENFP",dm:"하이텐션에 상상력이 튀는 말투",emoji:"🎨"},
+  doyoon:{tag:"장난꾸러기 안경남",mbti:"ENTP",dm:"재치 있고 장난스럽지만 결정적인 순간엔 진심인 말투",emoji:"😎"}
+};
+
+CHARS.splice(0,CHARS.length,
+ {id:"seojun",name:"형규",tag:"다정한 선배",mbti:"INFJ",
+  desc:"부드러운 갈색 머리와 베이지 가디건이 잘 어울리는 선배. 말투가 차분하고, 상대가 불편하지 않게 먼저 배려한다.",
+  like:"따뜻한 라떼, 중앙도서관 창가 자리, 천천히 걷기",dislike:"무례한 농담, 억지로 분위기 띄우기"},
+ {id:"taeo",name:"진하",tag:"시크한 밴드 보컬",mbti:"ESTP",
+  desc:"블랙 언더컷에 가죽 재킷. 말은 툭툭 던지지만 좋아하는 사람은 티 안 나게 챙기는 타입.",
+  like:"밴드 합주, 밤 산책, 솔직한 사람",dislike:"돌려 말하기, 가식"},
+ {id:"haneul",name:"찬형",tag:"엉뚱한 미대생",mbti:"ENFP",
+  desc:"애쉬 실버 머리와 비니, 스트릿룩이 눈에 띄는 미대생. 어디로 튈지 모르지만 같이 있으면 심심할 틈이 없다.",
+  like:"스케치북, 그래피티, 새벽 편의점",dislike:"뻔한 답, 지루한 규칙"},
+ {id:"doyoon",name:"지성",tag:"장난꾸러기 안경남",mbti:"ENTP",
+  desc:"구리빛 웨이브 머리, 투명 안경, 바시티 재킷으로 확실히 눈에 띄는 분위기 메이커. 장난 뒤에 진심을 숨긴다.",
+  like:"웃긴 밈, 축구, 즉흥 약속",dislike:"갑분싸, 너무 진지한 척"}
+);
+
+QUESTS.splice(0,QUESTS.length,
+ {id:"ot",ico:"🎓",bg:"ot",title:"신입생 OT",sub:"연세대에서 시작된 첫 만남",
+  scene:"OT 첫날, 연세대 캠퍼스가 너무 커서 길 잃을 뻔한 순간. 네 사람이 각자 말을 건다. 누구한테 답할까?",
+  lines:{
+   seojun:"\"길 헷갈렸죠? 괜찮아요. 제가 같이 가줄게요.\"",
+   taeo:"\"너 아까부터 같은 데 돌고 있던데. 따라와, 늦는다.\"",
+   haneul:"\"헐 너도 새내기? 나 방금 캠퍼스 지도 감으로 그렸는데 같이 볼래?\"",
+   doyoon:"\"길 잃은 거야? 오케이, 오늘부터 내가 인간 네비 해줄게.\""},
+  choices:{
+   seojun:[{t:"헐… 진짜요? 완전 살았다ㅠ 같이 가주세요!",p:25,r:"형규이 작게 웃는다. \"다행이다. 그럼 천천히 같이 가요.\""},
+           {t:"아… 저 괜찮아요! 혼자 가볼게요.",p:8,r:"\"그래도 무리하지 말고, 모르면 바로 연락해요.\" 형규이 걱정스럽게 본다."}],
+   taeo:[{t:"따라가도 돼요? 근데 선배 말투 좀 츤데레 같아요.",p:25,r:"진하가 피식 웃는다. \"눈치는 빠르네. 따라와.\""},
+         {t:"어… 네. 감사합니다.",p:8,r:"\"감사 인사는 됐고, 빨리 와.\" 진하가 앞서 걷는다."}],
+   haneul:[{t:"감으로 그린 지도요? ㅋㅋㅋ 완전 궁금한데요?",p:25,r:"찬형이 눈을 반짝인다. \"그치? 우리 벌써 잘 맞는 듯!\""},
+           {t:"지도는… 앱으로 보는 게 낫지 않을까요?",p:8,r:"\"그치만 내 지도엔 낭만이 있다구.\" 찬형이 웃는다."}],
+   doyoon:[{t:"인간 네비면 음성 안내도 해줘야 되는 거 아니에요?",p:25,r:"지성가 손가락으로 방향을 가리킨다. \"전방 10m에 설렘 구간입니다~\""},
+           {t:"ㅋㅋㅋ 그럼 부탁드릴게요.",p:8,r:"\"맡겨만 둬. 길 잃어도 웃기게는 해줄게.\""}]}
+ },
+ {id:"mt",ico:"🏕️",bg:"mt",title:"과 MT",sub:"밤 공기랑 모닥불",
+  scene:"MT 밤, 애들이 하나둘 숙소로 들어가고 모닥불 앞에 둘만 남을 기회가 생겼다. 누구 옆에 앉을까?",
+  lines:{
+   seojun:"\"춥죠? 제 겉옷 입어요. 감기 걸리면 안 되니까.\"",
+   taeo:"\"시끄러운 거 싫어서 나왔는데… 너는 있어도 괜찮아.\"",
+   haneul:"\"별 봐봐! 저거 완전 영화 장면 같지 않아?\"",
+   doyoon:"\"나 지금 진지한 말 하면 웃지 마. 아니 웃어도 돼, 그게 너답긴 해.\""},
+  choices:{
+   seojun:[{t:"그럼 선배도 추우니까… 반반 나눠 입으면 안 돼요?",p:25,r:"형규이 귀를 붉힌다. \"그 말, 생각보다 위험한데요.\""},
+           {t:"감사해요. 진짜 좀 추웠어요.",p:8,r:"\"말해줘서 다행이에요.\" 형규이 겉옷을 건넨다."}],
+   taeo:[{t:"있어도 괜찮다니, 그거 나 좋아한다는 뜻이에요?",p:25,r:"진하가 시선을 피한다. \"…너 진짜 겁 없다.\""},
+         {t:"그럼 조용히 옆에 있을게요.",p:8,r:"진하가 말없이 자리를 조금 비워준다."}],
+   haneul:[{t:"헐 맞아요. 지금 소원 빌면 이루어질 것 같아요.",p:25,r:"\"나는 이미 빌었어. 너랑 더 친해지게 해달라고.\" 찬형이 웃는다."},
+           {t:"별 진짜 예쁘네요.",p:8,r:"\"그치? 근데 오늘은 네 반응이 더 재밌다.\""}],
+   doyoon:[{t:"안 웃을게요. 근데 선배 진지한 거 좀 귀여울 듯.",p:25,r:"지성가 멈칫한다. \"와, 너 방금 나 심장 공격했어.\""},
+           {t:"ㅋㅋㅋ 말해봐요. 들어줄게요.",p:8,r:"\"오케이, 웃음 참기 챌린지 시작.\""}]}
+ },
+ {id:"class",ico:"📚",bg:"class",title:"강의실 과제",sub:"조별 과제 대위기",
+  scene:"조별 과제 마감 전날, 팀원이 잠수 탔다. 급하게 도움을 청하자 네 사람이 각자 나선다.",
+  lines:{
+   seojun:"\"자료 정리는 제가 도와줄게요. 너 혼자 끙끙대지 마요.\"",
+   taeo:"\"잠수 탄 사람은 내가 연락해볼게. 넌 발표 준비해.\"",
+   haneul:"\"PPT 디자인? 그건 내가 살릴 수 있어. 완전 영화 포스터처럼 가자.\"",
+   doyoon:"\"발표는 내가 찢을게. 대신 너는 내 개그에 웃어주기.\""},
+  choices:{
+   seojun:[{t:"진짜요? 그럼 저도 같이 할게요. 혼자 시키면 미안하잖아요.",p:25,r:"\"같이 있으면 저도 더 힘나요.\" 형규이 조용히 웃는다."},
+           {t:"감사해요. 진짜 큰일 난 줄 알았어요.",p:8,r:"\"괜찮아요. 아직 늦지 않았어요.\""}],
+   taeo:[{t:"발표는 제가 해볼게요. 대신 끝나고 커피 사드릴게요.",p:25,r:"\"좋아. 그런 깔끔한 거래 마음에 드네.\""},
+         {t:"오… 진짜 연락해줄 수 있어요?",p:8,r:"\"내가 한다면 하는 거야.\""}],
+   haneul:[{t:"완전 좋아요. 근데 컨셉은 저랑 같이 정해요!",p:25,r:"\"좋아! 우리 팀명도 만들어야겠다.\" 찬형이 들뜬다."},
+           {t:"그럼 디자인 부탁드려요!",p:8,r:"\"맡겨. 발표자료에 영혼 넣어줄게.\""}],
+   doyoon:[{t:"좋아요. 선배 개그 살릴 수 있게 대본 제가 맞춰볼게요.",p:25,r:"\"우리 콤비 뭐야? 벌써 A+ 냄새 난다.\""},
+           {t:"ㅋㅋㅋ 웃는 건 자신 있어요.",p:8,r:"\"좋아, 관객 1호 확보.\""}]}
+ },
+ {id:"festival",ico:"🎪",bg:"festival",title:"대학 축제",sub:"불꽃놀이 아래",
+  scene:"연세대 축제 밤, 사람들 사이에서 놓칠 뻔한 순간 누군가 손을 잡아준다.",
+  lines:{
+   seojun:"\"사람 많으니까 손 놓지 말아요. 위험해요.\"",
+   taeo:"\"붙어 있어. 놓치면 내가 귀찮아져.\"",
+   haneul:"\"저기 포토존 미쳤다! 손 잡고 뛰자!\"",
+   doyoon:"\"미아 방지 손잡기 서비스입니다~ 근데 추가요금은 설렘이야.\""},
+  choices:{
+   seojun:[{t:"네… 저 진짜 안 놓을게요.",p:25,r:"형규이 손에 힘을 준다. \"나도 안 놓을게요.\""},
+           {t:"고마워요. 사람 진짜 많네요.",p:8,r:"\"천천히 가요. 제가 앞에 있을게요.\""}],
+   taeo:[{t:"귀찮다면서 손은 왜 이렇게 꽉 잡아요?",p:25,r:"진하가 낮게 웃는다. \"놓기 싫어서.\""},
+         {t:"알겠어요. 따라갈게요.",p:8,r:"진하가 말없이 속도를 맞춘다."}],
+   haneul:[{t:"뛰어요! 근데 예쁘게 찍어줘야 돼요!",p:25,r:"\"당연하지. 오늘 사진 중에 네가 제일 잘 나올걸?\""},
+           {t:"포토존 좋죠! 가요!",p:8,r:"\"역시 너 반응 최고야.\""}],
+   doyoon:[{t:"추가요금 설렘이면 이미 과금된 것 같은데요?",p:25,r:"지성가 크게 웃다가 살짝 진지해진다. \"그럼 환불 안 돼.\""},
+           {t:"ㅋㅋㅋ 선배 진짜 웃겨요.",p:8,r:"\"웃겼으면 손잡기 성공.\""}]}
+ },
+ {id:"booth",ico:"🍢",bg:"booth",title:"축제 부스 알바",sub:"둘만의 마감 시간",
+  scene:"축제 부스 마감 시간. 정신없이 바쁜데 한 사람과 호흡이 착착 맞기 시작한다.",
+  lines:{
+   seojun:"\"무거운 건 제가 들게요. 너는 주문만 봐요.\"",
+   taeo:"\"손 데면 어쩌려고. 이리 줘봐, 내가 할게.\"",
+   haneul:"\"우리 메뉴 이름 새로 짓자. 완전 레전드로.\"",
+   doyoon:"\"우리 둘이 붙으니까 매출 오르는 거 봤지? 이건 운명이야.\""},
+  choices:{
+   seojun:[{t:"그럼 마감 끝나고 제가 음료 사드릴게요. 데이트처럼요.",p:25,r:"형규이 놀란 듯 웃는다. \"그럼 저도 데이트처럼 기다릴게요.\""},
+           {t:"고마워요. 선배 진짜 든든해요.",p:8,r:"\"그 말 들으니까 힘나네요.\""}],
+   taeo:[{t:"손 잡은 김에 조금만 더 잡고 있으면 안 돼요?",p:25,r:"진하가 굳는다. \"…너 그런 말 아무한테나 하지 마.\""},
+         {t:"조심할게요. 고마워요.",p:8,r:"\"다치지만 마.\""}],
+   haneul:[{t:"레전드 메뉴명 제가 지어볼게요. 우리 콤비 이름도요!",p:25,r:"\"미쳤다. 너랑 하면 뭐든 콘텐츠가 돼.\""},
+           {t:"좋아요. 메뉴 이름 바꾸면 재밌겠다.",p:8,r:"\"그치? 이런 게 축제지!\""}],
+   doyoon:[{t:"운명이면 마감 뒤풀이도 같이 가야 되는 거 아닌가요?",p:25,r:"지성가 안경을 고쳐 쓴다. \"방금 멘트, 내가 졌다.\""},
+           {t:"ㅋㅋㅋ 매출왕 인정이에요.",p:8,r:"\"파트너가 좋아서 그런 거지.\""}]}
+ }
+);
+
+let unlockedQuestCount=1;
+let dmTarget=null;
+const dmHistory={seojun:[],taeo:[],haneul:[],doyoon:[]};
+
+/* ============================================================
+   💌 DM 대화 엔진
+   API 키는 브라우저에 두지 않는다! 백엔드 프록시(/api/dm)가
+   서버 환경변수의 키로 LLM 을 호출하고 결과만 돌려준다.
+   → 로컬/배포 모두 `node server.js` 로 실행해야 DM AI 가 켜진다.
+   ============================================================ */
+const DM_ENDPOINT = "/api/dm";
+
+/* DM 상대 고르기 (퀘스트/상태창 아래 DM 버튼) */
+function openDMPicker(){
+  const box=$("dmPickList");box.innerHTML="";
+  CHARS.forEach(c=>{
+    const emoji=(PROFILE[c.id]||{}).emoji||"💬";
+    const it=document.createElement("div");
+    it.className="qitem";
+    it.innerHTML=`<div class="ico">${emoji}</div>
+      <div><div class="qt">${c.name}</div><div class="qd">${c.tag} · 💗 ${affinity[c.id]}/100</div></div>`;
+    it.onclick=()=>{close_("ovDMPick");openDM(c.id);};
+    box.appendChild(it);
+  });
+  open_("ovDMPick");
+}
+
+function bg(kind){
+  const IMG_BG={
+    ot:"assets/backgrounds/ot.png",
+    mt:"assets/backgrounds/mt.png",
+    class:"assets/backgrounds/class.png",
+    festival:"assets/backgrounds/festival.png",
+    booth:"assets/backgrounds/booth.png"
+  };
+  return `<img src="${IMG_BG[kind]}" alt="${kind} background">`;
+}
+
+function renderMain(){
+  const r=$("roster");r.innerHTML="";
+  CHARS.forEach(c=>{
+    const pct=Math.min(100,affinity[c.id]);
+    const d=document.createElement("div");
+    d.className="char";
+    d.innerHTML=`${art(c.id)}
+      <div class="name">${c.name}</div>
+      <div class="tag">${c.tag}</div>
+      <div class="aff"><i style="width:${pct}%"></i></div>
+      <div class="aff-num">💗 ${affinity[c.id]} / 100</div>`;
+    d.onclick=()=>openStatus(c.id);
+    r.appendChild(d);
+  });
+}
+
+function openStatus(focus){
+  const box=$("statusList");box.innerHTML="";
+  CHARS.forEach(c=>{
+    const card=document.createElement("div");
+    card.className="stat-card";
+    card.innerHTML=`<div>${art(c.id)}</div>
+      <div class="info">
+        <b>${c.name}</b> · ${c.tag}<span class="mbti">${c.mbti}</span><br>
+        ${c.desc}<br>
+        <b>좋아하는 것</b> : ${c.like}<br>
+        <b>싫어하는 것</b> : ${c.dislike}<br>
+        <b>현재 호감도</b> : 💗 ${affinity[c.id]} / 100<br>
+        <button class="dm-btn" onclick="openDM('${c.id}')">💌 ${c.name}에게 DM</button>
+      </div>`;
+    box.appendChild(card);
+  });
+  open_("ovStatus");
+}
+
+function openQuests(){
+  const list=$("questList");list.innerHTML="";
+  QUESTS.forEach((q,i)=>{
+    const locked=i>=unlockedQuestCount;
+    const it=document.createElement("div");
+    it.className="qitem"+(doneQuests[q.id]?" done":"");
+    it.style.opacity=locked?".42":"";
+    it.style.cursor=locked?"not-allowed":"pointer";
+    it.innerHTML=`<div class="ico">${locked?"🔒":q.ico}</div>
+      <div><div class="qt">${q.title}</div><div class="qd">${locked?"이전 퀘스트 완료 후 열림":q.sub}</div></div>`;
+    it.onclick=()=>{if(locked){toast("아직 안 열렸어! 앞 퀘스트 먼저 클리어해줘 ✨");return;} close_("ovQuest");startQuest(q.id);};
+    list.appendChild(it);
+  });
+  open_("ovQuest");
+}
+
+function renderScene(active){
+  const s=$("sceneChars");s.innerHTML="";
+  CHARS.forEach(c=>{
+    const d=document.createElement("div");
+    d.className="char"+(active&&active!==c.id?" dim":"");
+    d.innerHTML=`${art(c.id)}<div class="name">${c.name}</div>`;
+    s.appendChild(d);
+  });
+}
+
+function resolveChoice(cid,opt){
+  const c=CHARS.find(x=>x.id===cid);
+  $("dWho").textContent=c.name;
+  $("dLine").textContent=opt.r;
+  affinity[cid]=Math.min(100,affinity[cid]+opt.p);
+  const qIndex=QUESTS.findIndex(q=>q.id===cur.q.id);
+  const wasNew=!doneQuests[cur.q.id];
+  doneQuests[cur.q.id]=true;
+  if(wasNew && qIndex+1>=unlockedQuestCount && unlockedQuestCount<QUESTS.length){
+    unlockedQuestCount=qIndex+2;
+  }
+  const ch=$("dChoices");ch.innerHTML="";
+  const b=document.createElement("button");
+  b.className="btn";b.style.marginTop="6px";
+  const next=QUESTS[unlockedQuestCount-1];
+  b.textContent=`💗 +${opt.p} · 메인으로`;
+  b.onclick=()=>{
+    if(affinity[cid]>=100){ ending(cid); }
+    else {
+      renderMain();go("main");
+      toast(next && wasNew ? `띵동! 새 퀘스트 '${next.title}' 열렸어 💌` : `${c.name} 호감도 +${opt.p}!`);
+    }
+  };
+  ch.appendChild(b);
+}
+
+function openDM(cid){
+  dmTarget=cid;
+  const c=CHARS.find(x=>x.id===cid);
+  $("dmTitle").textContent=`💌 ${c.name} DM · AI 대화 ✨`;
+  close_("ovStatus");
+  renderDM();
+  open_("ovDM");
+}
+
+function renderDM(){
+  const log=$("dmLog");log.innerHTML="";
+  const c=CHARS.find(x=>x.id===dmTarget);
+  if(dmHistory[dmTarget].length===0){
+    dmHistory[dmTarget].push({from:"him",text:firstDM(dmTarget)});
+  }
+  dmHistory[dmTarget].forEach(m=>{
+    const div=document.createElement("div");
+    div.className=`bubble ${m.from==="me"?"me":"him"}`;
+    div.textContent=m.text;
+    log.appendChild(div);
+  });
+  log.scrollTop=log.scrollHeight;
+  $("dmText").placeholder=`${c.name}에게 뭐라고 보낼까?`;
+}
+
+function firstDM(cid){
+  return {
+    seojun:"도착했어요? 오늘 캠퍼스 복잡했죠. 괜찮으면 다음엔 제가 길 안내해줄게요.",
+    taeo:"집 갔냐. 늦었으면 답장만 해. 괜히 걱정되니까.",
+    haneul:"나 방금 너 생각나는 색 조합 찾음!! 완전 봄 캠퍼스 느낌이야 🎨",
+    doyoon:"오늘 인간 네비 서비스 만족도 조사합니다~ 별점 5점이면 내일도 안내 가능 😎"
+  }[cid];
+}
+
+async function sendDM(){
+  const input=$("dmText");
+  const text=input.value.trim();
+  if(!text||!dmTarget)return;
+  const cid=dmTarget;
+  dmHistory[cid].push({from:"me",text});
+  input.value="";
+  renderDM();
+
+  // 상대가 타이핑 중… 표시
+  const log=$("dmLog");
+  const typing=document.createElement("div");
+  typing.className="bubble him";
+  typing.textContent="입력 중…";
+  log.appendChild(typing);
+  log.scrollTop=log.scrollHeight;
+
+  let reply, aiFailed=false;
+  try{
+    reply = await aiReply(cid);               // 백엔드 프록시(/api/dm) 호출
+  }catch(e){
+    console.warn("[DM] AI 호출 실패 → 오프라인 응답으로 대체:", e.message);
+    aiFailed=true;
+    reply = personaReply(cid,text);           // 서버 미실행/오류 시 규칙기반 폴백
+  }
+  typing.remove();
+  if(aiFailed){
+    dmHistory[cid].push({from:"him",text:"⚠️ 서버 미연결 — `node server.js` 로 실행했는지 확인해줘 (지금은 오프라인 응답)"});
+  }
+
+  // 실제 카톡처럼 1~3개의 짧은 말풍선으로 분할
+  const parts = String(reply)
+    .split(/\n+|(?<=[.?!~ㅋㅎ])\s+(?=\S)/)
+    .map(s=>s.trim()).filter(Boolean).slice(0,3);
+  (parts.length?parts:[String(reply)]).forEach(p=>dmHistory[cid].push({from:"him",text:p}));
+  renderDM();
+}
+
+/* 캐릭터별 시스템 프롬프트 — 페르소나 + 관계(호감도) + 카톡 말투 규칙 */
+function dmSystemPrompt(cid){
+  const c=CHARS.find(x=>x.id===cid);
+  const p=PROFILE[cid]||{};
+  const aff=affinity[cid]||0;
+  const warmth = aff>=70 ? "이미 서로 마음이 통하는 사이. 표현이 다정하고 살짝 달달하다."
+              : aff>=35 ? "조금씩 가까워지는 썸 단계. 관심을 은근히 드러낸다."
+              :           "이제 막 알아가는 사이. 예의는 있지만 조금 조심스럽다.";
+  return `너는 여성향 연애 시뮬레이션 게임의 남자 주인공 '${c.name}'이다.
+컨셉: ${c.tag}, MBTI ${c.mbti}. ${c.desc}
+말투 특징: ${p.dm||"자연스러운 말투"}.
+좋아하는 것: ${c.like} / 싫어하는 것: ${c.dislike}.
+현재 관계: ${warmth} (호감도 ${aff}/100)
+
+[카카오톡 채팅 규칙 — 반드시 지켜라]
+- 실제 대학생이 카톡하듯 아주 짧게. 한 번에 1~2문장, 40자 안팎.
+- 답장은 1~3개의 짧은 메시지로 나눠도 된다(줄바꿈으로 구분).
+- 이모지는 가끔만(0~1개), 남발 금지. ㅋㅋ/ㅎㅎ 같은 자연스러운 표현은 OK.
+- 캐릭터 말투를 처음부터 끝까지 일관되게 유지.
+- 나레이션·행동묘사·설명 금지. 오직 '대사'만.
+- 상대가 한 말에 실제로 반응하라(질문엔 답하고, 감정엔 공감).
+- AI/게임이라는 사실을 절대 언급하지 말고, 항상 ${c.name} 본인으로서 말하라.`;
+}
+
+/* 진짜 LLM 응답 — 키는 서버에만. 브라우저는 프록시(/api/dm)만 호출한다. */
+async function aiReply(cid){
+  const history=dmHistory[cid].slice(-10).map(m=>({from:m.from,text:m.text}));
+  const res=await fetch(DM_ENDPOINT,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({cid,affinity:affinity[cid]||0,history})
+  });
+  const data=await res.json().catch(()=>({error:"invalid response"}));
+  if(!res.ok) throw new Error(data.error||("proxy "+res.status));
+  return String(data.reply||"").trim();
+}
+
+/* 오프라인 폴백 — API 키가 없을 때 쓰는 규칙기반 응답.
+   ※ 진짜 대화(맥락 이해)가 아니라, 키워드로 분류해 여러 후보 중 랜덤으로 고르는 방식.
+      자연스러운 대화를 원하면 `node server.js` 로 백엔드를 실행하세요(.env 에 키 설정). */
+const lastReply={seojun:"",taeo:"",haneul:"",doyoon:""};
+function pick(cid,arr){
+  const cands=arr.filter(Boolean);
+  let choice=cands[Math.floor(Math.random()*cands.length)];
+  // 방금 보낸 답과 같으면 한 번 더 뽑아 반복 회피
+  if(cands.length>1 && choice===lastReply[cid]){
+    choice=cands[(cands.indexOf(choice)+1)%cands.length];
+  }
+  lastReply[cid]=choice;
+  return choice;
+}
+function personaReply(cid,text){
+  const t=String(text);
+  const crush=/좋아|보고 ?싶|설레|데이트|만나|그리워|심장|고마|사랑|자기/.test(t);
+  const tired=/힘들|피곤|우울|속상|망했|큰일|짜증|아파|스트레스/.test(t);
+  const quest=/과제|축제|ot|MT|엠티|부스|발표|시험|수업|공부/.test(t);
+  const ask  =/\?|뭐해|어디|언제|어때|할래|먹었|잤어|있어/.test(t);
+  const BANK={
+    seojun:{
+      tired:["그랬구나… 오늘 진짜 고생 많았어요.","무리하지 말아요. 지금은 좀 쉬어요, 내가 옆에 있을게요.","힘든 얘기 해줘서 고마워요. 나한텐 편하게 기대도 돼요."],
+      crush:["그 말 들으니까 나도 괜히 웃게 되네요.","나도… 너랑 있으면 마음이 놓여요.","그런 말은 반칙인데. 나 설레잖아요."],
+      quest:["같이 하면 돼요. 혼자 다 안고 가지 말아요.","내가 도울게요. 언제든 불러줘요.","그거 걱정되죠? 우리 차근차근 해봐요."],
+      ask:["음, 나는 방금 도서관 나왔어요. 너는요?","좋은 질문이네요ㅎㅎ 너 얘기 더 듣고 싶은데.","말해줘요, 궁금해서 그래요."],
+      def:["답장 와서 좋네요.","별말 아니어도 괜찮으니 편하게 보내요.","오늘 하루는 어땠어요?","네 톡 오면 왜 이렇게 반가운지 몰라요."]
+    },
+    taeo:{
+      tired:["누가 힘들게 했어. 말해봐.","해결은 못 해도 네 편은 들어줄게.","오늘은 그냥 아무것도 하지 마. 내가 있잖아."],
+      crush:["…그런 말 쉽게 하지 마. 기대하니까.","야, 심장 떨어질 뻔했잖아.","너 진짜 겁 없다. 나 흔들린다고."],
+      quest:["필요하면 불러. 옆엔 있어줄게.","그런 건 나한테 떠넘겨.","혼자 끙끙대지 말고 말을 해."],
+      ask:["나? 합주 끝나고 나왔어. 넌.","뭐 그런 걸 물어… 궁금하면 직접 와.","말 돌리지 말고 너 얘기나 해봐."],
+      def:["봤어. 읽씹은 안 해.","무슨 일 있어? 있으면 말하고.","…그래서, 오늘 뭐 했는데.","답장 늦어도 신경 쓰고 있어."]
+    },
+    haneul:{
+      tired:["헐 안 돼ㅠ 오늘은 우울 금지!","내가 웃긴 짤 3개 보낼게 기다려봐ㅋㅋ","힘들면 나한테 다 쏟아내. 다 받아줄게!"],
+      crush:["뭐야뭐야 지금 이거 청춘영화야?","나 방금 심장에 형광펜 칠함ㅋㅋㅋ","너 그런 말 하면 나 그림 못 그려. 너 생각나서."],
+      quest:["그거 완전 에피소드 각인데?","우리 같이 하면 무조건 재밌어져!","오 그거 내가 아이디어 있어, 들어볼래?"],
+      ask:["나 지금 새벽 편의점ㅋㅋ 너는 뭐해?","오 궁금한 거 많네 좋아 좋아!","그거 물어봐 줘서 완전 신남ㅋㅋ"],
+      def:["나 지금 답장하면서 실실 웃는 중ㅋㅋ","너 톡 말투 왜 이렇게 재밌냐","방금 너 닮은 색 조합 찾음 🎨","우리 다음에 뭐 재밌는 거 하자!"]
+    },
+    doyoon:{
+      tired:["힘들었어? 내 개그 무료 이용권 줄게.","근데 진지하게, 너 괜찮아?","오늘은 내가 웃겨줄 테니까 기운 내라."],
+      crush:["오… 방금 멘트 위험했다.","나 장난으로 못 넘길 수도 있는데?","야, 그런 말 하면 나 진심 된다?"],
+      quest:["콜. 나 분위기, 너 중심. 우승 조합.","그거 나만 믿어봐 ㅋㅋ","같이 하면 A+ 냄새 난다니까?"],
+      ask:["나? 축구 끝나고 치맥 각 보는 중ㅋㅋ 너는?","오 질문 좋아, 계속 물어봐~","궁금한 거 있으면 다 풀어줌ㅋㅋ"],
+      def:["메시지 확인 완료~","근데 네 톡 오면 왜 자동으로 웃기지?","오늘 뭐 재밌는 일 없었어?","심심했지? 내가 왔으니 됐고~"]
+    }
+  }[cid];
+  if(tired) return pick(cid,BANK.tired);
+  if(crush) return pick(cid,BANK.crush);
+  if(quest) return pick(cid,BANK.quest);
+  if(ask)   return pick(cid,BANK.ask);
+  return pick(cid,BANK.def);
+}
+
+function ending(cid){
+  const c=CHARS.find(x=>x.id===cid);
+  const conf={
+   seojun:"처음부터 지금까지, 내 시선은 계속 너한테 있었어요. 선배 말고 남자친구로 옆에 있어도 될까요?",
+   taeo:"나 이런 말 진짜 안 하는데… 너 아니면 안 되겠어. 나랑 사귀자.",
+   haneul:"내 스케치북에 요즘 너만 있어. 그러니까 내 진짜 뮤즈가 되어주라!",
+   doyoon:"장난 다 빼고 말할게. 나 너 좋아해. 앞으로 네 웃음도 설렘도 내가 책임지고 싶어."
+  }[cid];
+  const e=$("ending");
+  e.innerHTML=`<div class="ending-scene">
+      <div class="speech">${conf}</div>
+      ${art(cid)}
+      <div class="who">${c.name} 엔딩 · 연세대 캠퍼스 고백 · 💗 100</div>
+      <div class="end-actions">
+        <button class="btn" onclick="acceptEnd('${c.name}')">헐… 나도 좋아해 💗</button>
+        <button class="btn ghost" onclick="resetGame()">처음부터</button>
+      </div>
+    </div>`;
+  for(let i=0;i<16;i++){
+    const h=document.createElement("div");h.className="fall";
+    h.textContent=["💗","💕","💖","✨"][i%4];
+    h.style.left=(Math.random()*100)+"%";
+    h.style.animationDuration=(3+Math.random()*3)+"s";
+    h.style.animationDelay=(Math.random()*2)+"s";
+    e.appendChild(h);
+  }
+  go("ending");
+}
+
+function resetGame(){
+  affinity={seojun:0,taeo:0,haneul:0,doyoon:0};
+  doneQuests={};
+  unlockedQuestCount=1;
+  Object.keys(dmHistory).forEach(k=>dmHistory[k]=[]);
+  renderMain();
+  go("title");
+}
+
+renderMain();
+const previewMode2=new URLSearchParams(location.search).get("preview");
+if(previewMode2==="main"){go("main");}
+else if(previewMode2==="ending"){affinity.seojun=100;ending("seojun");}
+else if(previewMode2==="quests"){go("main");openQuests();}
+else if(previewMode2==="dm"){go("main");openDM("doyoon");}
+else if(QUESTS.some(q=>q.id===previewMode2)){startQuest(previewMode2);}
+</script>
+</body>
+</html>

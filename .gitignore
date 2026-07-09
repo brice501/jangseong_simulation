@@ -1,0 +1,9 @@
+node_modules/
+.env
+*.log
+.DS_Store
+
+# 로컬 작업물 / 스크린샷 (배포 불필요)
+tmp/
+campus_romance_*.png
+rock_paper_scissors.py
