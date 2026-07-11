@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>연세대학교 희망원정대</title>
+<title>연세대학교 · 스무살 멘토링 게임</title>
 <style>
   :root{
     --pink:#ff7eb3; --pink-d:#ff4f8b; --cream:#fff6fb; --ink:#3a2b39;
@@ -93,13 +93,6 @@
   .qitem.done::after{content:'완료 ✓';margin-left:auto;color:#7bbf6a;font-weight:800;font-size:12px}
   .qitem.lock{opacity:.42;cursor:not-allowed}
 
-  /* PERSPECTIVE CARDS */
-  .pcards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .pcard{background:linear-gradient(160deg,#fff6fb,#eef4ff);border:1.5px solid #e3d6ef;border-radius:14px;padding:12px}
-  .pcard b{color:var(--navy)}
-  .pcard span{font-size:12px;color:#6a5}
-  .pcard p{font-size:12.5px;color:#5a4a55;margin:4px 0 0;line-height:1.5}
-
   /* QUEST PLAY */
   #play{background:linear-gradient(160deg,#cfe8ff,#ffe9f4)}
   .stage{flex:1;position:relative;overflow:hidden}
@@ -184,7 +177,7 @@
 
   .toast{position:absolute;top:60px;left:50%;transform:translateX(-50%);z-index:30;background:var(--ink);color:#fff;padding:10px 18px;border-radius:30px;font-weight:700;font-size:13px;opacity:0;transition:.3s;pointer-events:none}
   .toast.show{opacity:1;top:70px}
-  @media(max-width:560px){.char .tag{display:none}.stat-card{flex-direction:column;align-items:center;text-align:center}.pcards{grid-template-columns:1fr}.consensus{min-width:120px}}
+  @media(max-width:560px){.char .tag{display:none}.stat-card{flex-direction:column;align-items:center;text-align:center}.consensus{min-width:120px}}
   @media(max-width:700px), (orientation:portrait){
     body{padding:0;overflow:hidden}
     #app{width:100vw;height:100vh;max-width:none;border-radius:0}
@@ -247,8 +240,8 @@
   <section class="screen active" id="title">
     <div class="badge"><img src="assets/logo/yonsei_symbol.jpg" alt="연세대"><b>연세대학교 · 스무살 멘토링</b></div>
     <div class="heart">💗</div>
-    <h1>두근두근 대학생활</h1>
-    <div class="sub">장성이들의 스무살<br>두근두근 대학생활 대작전</div>
+    <h1>스무살 멘토링 게임</h1>
+    <div class="sub">검정 실루엣의 ‘나’로 시작하는<br>여고 대상 대학 멘토링 로맨스 시뮬레이션</div>
     <div class="title-btns">
       <button class="btn" onclick="go('main')">시작하기 ▶</button>
     </div>
@@ -297,11 +290,6 @@
     <p style="font-size:13px;color:#a07;margin-top:-4px">각 퀘스트는 검정 실루엣 나레이션 → 상황 → 남주 선택지 순서로 진행됩니다. 남주를 고르면 그 남주만 확대되어 1:1 대화가 열립니다.</p>
     <div class="qlist" id="questList"></div></div></div>
 
-  <div class="overlay" id="ovCards"><div class="panel"><button class="x" onclick="close_('ovCards')">×</button>
-    <h2>🃏 우리 조 관점 카드</h2>
-    <p style="font-size:13px;color:#a07;margin-top:-4px">6명이 한 장씩 뽑아요. 토론할 때 자기 카드 관점으로 말하면 모두가 발언하게 돼요.</p>
-    <div class="pcards" id="pcardList"></div></div></div>
-
   <div class="toast" id="toast"></div>
 </div>
 
@@ -314,12 +302,11 @@ const BASE_IMG={hyeong:"assets/characters/jisung.png",jinha:"assets/characters/j
 function imgTag(id,mood){const base=BASE_IMG[id]||"";return `<img src="assets/characters/${id}_${mood}.png" alt="" onerror="this.onerror=null;this.src='${base}'">`;}
 
 const CHARS=[
- {id:"hyeong",name:"형규",tag:"다정한 과 선배",mbti:"ENFJ",club:"과 학생회",desc:"베이지·아이보리 가디건과 셔츠의 포멀한 캠퍼스 선배. 사람 많은 중심에서 후배를 자연스럽게 챙긴다.",like:"사람 챙기기, 과방 커피 타주기, 후배 밥 사주기, 잔잔한 어쿠스틱, 단체사진",dislike:"분위기 깨는 사람, 뒷담화, 약속 안 지키기, 소외되는 사람 방치"},
- {id:"jinha",name:"진하",tag:"시크한 밴드부 보컬",mbti:"ISTP",club:"밴드부",desc:"블랙 레이어드 헤어, 가죽 재킷과 체인이 어울리는 락시크 보컬. 말은 짧지만 배려는 정확하다.",like:"합주·라이브, 새벽 드라이브, 가죽 재킷, 솔직한 사람, 무심한 배려",dislike:"가식, 오지랖, 규칙 강요, 돌려 말하기"},
- {id:"jisung",name:"지성",tag:"조용한 과 동기",mbti:"INFP",club:"코딩/알고리즘 동아리",desc:"후드와 셔츠, 투명 뿔테 안경의 공대 동기. 조용하지만 여주를 몰래 챙기고 오래전부터 마음을 숨기고 있다.",like:"문제 풀이·코딩, 조용한 카페, 논리 퍼즐, 여주 몰래 챙기기",dislike:"시끄러운 자리, 근거 없는 주장, 억지 텐션, 주목받기"},
- {id:"chanhyung",name:"찬형",tag:"유쾌한 야구부 주장",mbti:"ENTP",club:"농구부 매니저",desc:"오버핏 스트릿룩과 스니커즈가 잘 어울리는 에너지형 선배. 농구부를 챙기며 분위기를 살린다.",like:"농구, 스트릿 패션, 팀 챙기기, 에너지 넘치는 하루, 즉흥 약속",dislike:"축 처진 분위기, 몸 사리는 것, 약속 파토, 재미없는 것"}
+ {id:"hyeong",name:"형규",tag:"다정한 인싸 과 선배",mbti:"ENFJ",club:"과 학생회",desc:"베이지·아이보리 가디건과 셔츠의 포멀한 캠퍼스 선배. 사람 많은 중심에서 후배를 자연스럽게 챙긴다.",like:"사람 챙기기, 과방 커피 타주기, 후배 밥 사주기, 잔잔한 어쿠스틱, 단체사진",dislike:"분위기 깨는 사람, 뒷담화, 약속 안 지키기, 소외되는 사람 방치"},
+ {id:"jinha",name:"진하",tag:"나쁜 남자 밴드부 보컬",mbti:"ISTP",club:"밴드부",desc:"블랙 레이어드 헤어, 가죽 재킷과 체인이 어울리는 락시크 보컬. 말은 짧지만 배려는 정확하다.",like:"합주·라이브, 새벽 드라이브, 가죽 재킷, 솔직한 사람, 무심한 배려",dislike:"가식, 오지랖, 규칙 강요, 돌려 말하기"},
+ {id:"jisung",name:"지성",tag:"조용한 공대 동기",mbti:"INTP",club:"코딩/알고리즘 동아리",desc:"후드와 셔츠, 투명 뿔테 안경의 공대 동기. 조용하지만 여주를 몰래 챙기고 오래전부터 마음을 숨기고 있다.",like:"문제 풀이·코딩, 조용한 카페, 논리 퍼즐, 여주 몰래 챙기기",dislike:"시끄러운 자리, 근거 없는 주장, 억지 텐션, 주목받기"},
+ {id:"chanhyung",name:"찬형",tag:"운동 잘하는 스트릿 선배",mbti:"ESFP",club:"농구부 매니저",desc:"오버핏 스트릿룩과 스니커즈가 잘 어울리는 에너지형 선배. 농구부를 챙기며 분위기를 살린다.",like:"농구, 스트릿 패션, 팀 챙기기, 에너지 넘치는 하루, 즉흥 약속",dislike:"축 처진 분위기, 몸 사리는 것, 약속 파토, 재미없는 것"}
 ];
-const PCARDS=[{n:"낭만파",e:"🌸",d:"분위기와 설렘이 최고. 예쁜 추억을 우선해요."},{n:"현실파",e:"📊",d:"비용·시간·동선을 따져요. 실제 가능한 선택을 봅니다."},{n:"도전파",e:"🔥",d:"안 해본 선택지를 응원해요. 새 경험을 밀어줍니다."},{n:"안정파",e:"🛟",d:"무리 없이 편한 쪽. 소외되는 사람을 챙겨요."},{n:"인싸파",e:"🎉",d:"사람들과 어울리는 선택을 선호해요."},{n:"마이웨이",e:"🎧",d:"남 눈치보다 나의 로망을 봅니다."}];
 const MOOD={smile:"평온",bright:"환함",worry:"걱정",shy:"설렘",serious:"진지",cool:"시크",smirk:"픽 웃음",play:"장난"};
 const EMOTE={smile:"🙂",bright:"✨",worry:"💦",shy:"💗",serious:"❗",cool:"🎧",smirk:"😏",play:"😆"};
 function art(id,mood="smile"){return `<div class="mood-chip">${MOOD[mood]||"표정"}</div>${imgTag(id,mood)}`;}
@@ -388,7 +375,6 @@ function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');set
 
 function renderMain(){const r=$('roster');r.innerHTML='';CHARS.forEach(c=>{const d=document.createElement('div');d.className='char';d.innerHTML=`${art(c.id)}<div class="name">${c.name}</div><div class="tag">${c.tag}</div>`;d.onclick=()=>openStatus();r.appendChild(d);});$('conNum').textContent=consensus;$('conBar').style.width=Math.min(100,consensus)+'%';}
 function openStatus(){const b=$('statusList');b.innerHTML='';CHARS.forEach(c=>{const card=document.createElement('div');card.className='stat-card';card.innerHTML=`${imgTag(c.id,'smile')}<div class="info"><b>${c.name}</b> · ${c.tag}<span class="mbti">${c.mbti}</span><br>${c.desc}<br><b>동아리</b> : ${c.club}<br><b>좋아하는 것</b> : ${c.like}<br><b>싫어하는 것</b> : ${c.dislike}<br><b>현재 관계</b> : 아직은 비밀. 축제 부스에서 마음이 드러나요.</div>`;b.appendChild(card);});open_('ovStatus');}
-function openCards(){const b=$('pcardList');b.innerHTML='';PCARDS.forEach(p=>{const d=document.createElement('div');d.className='pcard';d.innerHTML=`<b>${p.e} ${p.n}</b><br><p>${p.d}</p>`;b.appendChild(d);});open_('ovCards');}
 function openQuests(){const l=$('questList');l.innerHTML='';QUESTS.forEach((q,i)=>{const lock=i>=unlocked;const it=document.createElement('div');it.className='qitem'+(done[q.id]?' done':'')+(lock?' lock':'');it.innerHTML=`<div class="ico">${lock?'🔒':q.ico}</div><div><div class="qt">${q.title}</div><div class="qd">${lock?'이전 퀘스트 완료 후 열림':q.sub}</div></div>`;it.onclick=()=>{if(lock){toast('앞 퀘스트부터 진행해줘 ✨');return;}close_('ovQuest');startQuest(q.id);};l.appendChild(it);});open_('ovQuest');}
 
 /* 4명 나란히 보기 (선택 단계) */
