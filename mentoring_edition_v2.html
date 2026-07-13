@@ -109,7 +109,7 @@
   .scene-chars .char.dim{opacity:.32;filter:grayscale(.4)}
   .scene-chars .char .name{color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5)}
   .solo{position:absolute;bottom:150px;left:0;right:0;display:flex;justify-content:center;z-index:1}
-  .solo svg{height:min(46vh,320px);width:auto;filter:drop-shadow(0 10px 20px rgba(0,0,0,.4))}
+  .solo svg,.solo img{height:min(46vh,320px);width:auto;filter:drop-shadow(0 10px 20px rgba(0,0,0,.4))}
   .qhead{position:absolute;top:58px;left:14px;z-index:5;background:rgba(255,255,255,.92);border-radius:30px;padding:6px 15px;font-weight:800;color:var(--pink-d);font-size:13px}
   .discuss{display:none}
   .discuss b{display:block;font-size:10px;opacity:.8;letter-spacing:.05em;margin-bottom:2px}
@@ -127,7 +127,7 @@
     display:none;align-items:center;justify-content:center;text-align:center;padding:28px}
   .narration.active{display:flex}
   .narration .inner{max-width:560px;color:#fff}
-  .narration .inner svg{height:min(42vh,300px);width:auto;margin-bottom:18px;filter:drop-shadow(0 12px 24px rgba(0,0,0,.5))}
+  .narration .inner svg,.narration .inner img{height:min(42vh,300px);width:auto;margin-bottom:18px;filter:drop-shadow(0 12px 24px rgba(0,0,0,.5))}
   .narration .txt{font-size:20px;line-height:1.8;font-weight:800;white-space:pre-line;text-shadow:0 2px 10px rgba(0,0,0,.5)}
   .narration .hint{margin-top:14px;font-size:12px;color:#cbd4ff;font-weight:700}
   .char.mood-shy img{filter:drop-shadow(0 14px 16px rgba(0,0,0,.16)) saturate(1.12) brightness(1.04)}
@@ -225,7 +225,7 @@
     .qhead{top:74px;left:12px;font-size:12px}
     .discuss{top:74px;right:12px;max-width:52%;font-size:11px}
     .narration .txt{font-size:17px}
-    .narration .inner svg{height:min(34vh,240px)}
+    .narration .inner svg,.narration .inner img{height:min(34vh,240px)}
     .speech{top:34px;width:calc(100% - 28px);font-size:15px;padding:14px 16px}
     .ending-scene img{height:72%;max-width:78vw}
     #ending .who{bottom:86px;width:100%;font-size:17px}
@@ -305,7 +305,7 @@ function imgTag(id,mood){const base=BASE_IMG[id]||"";return `<img src="assets/ch
 const CHARS=[
  {id:"hyeong",name:"형규",tag:"다정한 과 선배",mbti:"ENFJ",club:"과 학생회",desc:"베이지·아이보리 가디건과 셔츠의 포멀한 캠퍼스 선배. 사람 많은 중심에서 후배를 자연스럽게 챙긴다.",like:"사람 챙기기, 과방 커피 타주기, 후배 밥 사주기, 잔잔한 어쿠스틱, 단체사진",dislike:"분위기 깨는 사람, 뒷담화, 약속 안 지키기, 소외되는 사람 방치"},
  {id:"jinha",name:"진하",tag:"나쁜 남자 밴드부 보컬",mbti:"ISTP",club:"밴드부",desc:"블랙 레이어드 헤어, 가죽 재킷과 체인이 어울리는 락시크 보컬. 말은 짧지만 배려는 정확하다.",like:"합주·라이브, 새벽 드라이브, 가죽 재킷, 솔직한 사람, 무심한 배려",dislike:"가식, 오지랖, 규칙 강요, 돌려 말하기"},
- {id:"jisung",name:"지성",tag:"조용한 과 동기",mbti:"INFP",club:"보드게임 동아리",desc:"후드와 셔츠, 투명 뿔테 안경의 공대 동기. 조용하지만 여주를 몰래 챙기고 오래전부터 마음을 숨기고 있다.",like:"문제 풀이, 조용한 카페, 논리 퍼즐, 여주 몰래 챙기기",dislike:"시끄러운 자리, 근거 없는 주장, 억지 텐션, 주목받기"},
+ {id:"jisung",name:"지성",tag:"조용한 과 동기",mbti:"INFP",club:"보드게임 동아리",desc:"내린 앞머리와 투명 뿔테 안경, 체크 셔츠와 와이드 팬츠가 어울리는 공대 동기. 조용하지만 여주를 몰래 챙기고 오래전부터 마음을 숨기고 있다.",like:"문제 풀이, 조용한 카페, 논리 퍼즐, 여주 몰래 챙기기",dislike:"시끄러운 자리, 근거 없는 주장, 억지 텐션, 주목받기"},
  {id:"chanhyung",name:"찬형",tag:"유쾌한 농구부 주장",mbti:"ENTP",club:"농구부",desc:"오버핏 스트릿룩과 스니커즈가 잘 어울리는 에너지형 선배. 농구부를 챙기며 분위기를 살린다.",like:"농구, 스트릿 패션, 팀 챙기기, 에너지 넘치는 하루, 즉흥 약속",dislike:"축 처진 분위기, 몸 사리는 것, 약속 파토, 재미없는 것"},
  {id:"seongho",name:"성호",tag:"연세대학교 응원단 단장",mbti:"ENFP",club:"응원단",desc:"파란색과 흰색 응원단 유니폼이 잘 어울리는 캠퍼스 리더. 큰 웃음과 에너지로 주변 사람을 자연스럽게 끌어당긴다.",like:"응원 연습, 단체 구호, 봄 캠퍼스 산책, 후배 챙기기, 무대 위 박수 소리",dislike:"팀 분위기 깨는 말, 소극적인 태도, 약속 없는 결석, 진심 없는 칭찬"},
  {id:"seokju",name:"석주",tag:"편안한 소꿉친구 ",mbti:"ISFJ",club:"건축봉사동아리",desc:"회색 오버핏 후드와 청바지가 익숙한 소꿉친구 같은 동기. 조용하지만 필요한 순간에는 늘 옆에 있어주는 안정감이 있다.",like:"편의점 간식, 해 질 녘 골목, 늦은 밤 산책, 오래된 약속, 조용한 위로",dislike:"갑작스러운 주목, 빈말, 무리한 부탁, 혼자 참는 사람을 그냥 두기"}
@@ -313,21 +313,7 @@ const CHARS=[
 const MOOD={smile:"평온",bright:"환함",worry:"걱정",shy:"설렘",serious:"진지",cool:"시크",smirk:"픽 웃음",play:"장난"};
 const EMOTE={smile:"🙂",bright:"✨",worry:"💦",shy:"💗",serious:"❗",cool:"🎧",smirk:"😏",play:"😆"};
 function art(id,mood="smile"){return `<div class="mood-chip">${MOOD[mood]||"표정"}</div>${imgTag(id,mood)}`;}
-function silhouette(){return `<svg viewBox="0 0 240 360" xmlns="http://www.w3.org/2000/svg" aria-label="여자 주인공 실루엣">
-  <defs>
-    <radialGradient id="heroGlow" cx="50%" cy="35%" r="62%"><stop offset="0" stop-color="#8894ff" stop-opacity=".72"/><stop offset=".55" stop-color="#495078" stop-opacity=".28"/><stop offset="1" stop-color="#11131f" stop-opacity="0"/></radialGradient>
-    <linearGradient id="heroHair" x1="0" x2="1"><stop offset="0" stop-color="#070812"/><stop offset=".55" stop-color="#151827"/><stop offset="1" stop-color="#070812"/></linearGradient>
-    <linearGradient id="heroBody" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#191b2c"/><stop offset="1" stop-color="#080911"/></linearGradient>
-  </defs>
-  <ellipse cx="120" cy="138" rx="106" ry="128" fill="url(#heroGlow)"/>
-  <path d="M120 35c-36 0-57 25-58 62-18 10-25 33-20 60 4 24 16 42 31 52l-8 43c-27 13-42 41-45 84h200c-3-43-18-71-45-84l-8-43c15-10 27-28 31-52 5-27-2-50-20-60-1-37-22-62-58-62Z" fill="url(#heroHair)"/>
-  <path d="M75 102c-8 53 0 91 19 116-31-17-45-55-38-90 3-16 9-24 19-26Z" fill="#05060d" opacity=".9"/>
-  <path d="M165 102c8 53 0 91-19 116 31-17 45-55 38-90-3-16-9-24-19-26Z" fill="#05060d" opacity=".9"/>
-  <path d="M92 171c7 18 18 29 28 29s21-11 28-29l7 66H85l7-66Z" fill="#11131f"/>
-  <path d="M66 256c10-32 29-50 54-50s44 18 54 50l17 104H49l17-104Z" fill="url(#heroBody)"/>
-  <path d="M69 259c27 22 75 22 102 0" fill="none" stroke="#2f365a" stroke-width="3" opacity=".45"/>
-  <circle cx="120" cy="134" r="2.4" fill="#dfe6ff" opacity=".75"/>
-</svg>`;}
+function silhouette(){return `<img src="assets/characters/heroine_silhouette.png" alt="여자 주인공 실루엣">`;}
 function bgHTML(kind){const IMG={main:"assets/backgrounds/yonsei_main.png",course:"assets/backgrounds/class.png",club:"assets/backgrounds/ot.png",mt:"assets/backgrounds/mt.png",travel:"assets/backgrounds/yonsei_main.png",festival:"assets/backgrounds/festival.png",booth:"assets/backgrounds/booth.png"};return IMG[kind]?`<img src="${IMG[kind]}" alt="">`:"";}
 
 const QUESTS=[
@@ -370,7 +356,7 @@ const TALK_SCRIPT={
 const SPRITE_PROMPTS={
  hyeong:"same character sheet, korean webtoon style, warm friendly ENFJ university senior, beige cardigan, bust-up close-up, expressions: gentle smile, worried, shy blush, bright confession smile, hand reaching forward, clean lineart, soft cel shading, transparent background",
  jinha:"same character sheet, korean webtoon style, bad-boy ISTP band vocalist, black layered hair, leather jacket, bust-up close-up, expressions: cool gaze, serious stare, faint smirk, shy glance away, hand in pocket or guitar strap gesture, transparent background",
- jisung:"same character sheet, Korean webtoon manhwa style, quiet mysterious engineering-major university student, neat dark hair with soft bangs, clear-frame glasses, plaid checked button-up shirt over plain white tee, slim trousers, bust-up close-up, expressions: calm intelligent, worried, shy blush, serious confession, subtle hand gesture only, transparent background",
+ jisung:"same character sheet, Korean webtoon manhwa style, quiet mysterious engineering-major university student, soft dark hair worn down with natural bangs, clear-frame glasses, plaid checked button-up shirt over plain white tee, loose wide-leg trousers, black leather loafers, bust-up close-up, expressions: calm intelligent, worried, shy blush, serious confession, subtle hand gesture only, identical outfit hairstyle body pose and framing, transparent background",
  chanhyung:"same character sheet, korean webtoon style, athletic ESFP streetwear senior, cap hoodie sneakers, bust-up close-up, expressions: bright grin, playful wink, serious caring, shy smile, tapping shoulder gesture, transparent background",
  seongho:"same character sheet, korean webtoon style, cheerful ENFP cheer squad campus leader, blue and white varsity cheer uniform, athletic build, bust-up close-up, expressions: bright crescent-eye smile, playful confidence, shy confession, energetic wink, transparent background",
  seokju:"same character sheet, korean webtoon style, quiet ISFJ childhood friend, gray oversized hoodie, soft messy black hair, sleepy gentle eyes, bust-up close-up, expressions: calm smile, worried caring, shy blush, serious confession, hands in hoodie pocket gesture, transparent background"
