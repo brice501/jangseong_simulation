@@ -53,11 +53,11 @@
     box-shadow:0 6px 16px rgba(0,38,84,.1);min-width:150px}
   .consensus .bar{height:8px;background:#dfe8f5;border-radius:6px;overflow:hidden;margin-top:3px}
   .consensus .bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#6fa8ff,var(--navy));transition:width .6s}
-  .roster{flex:1;display:flex;justify-content:center;align-items:flex-end;gap:6px;padding:64px 100px 78px 20px;overflow:hidden}
+  .roster{flex:1;display:flex;justify-content:center;align-items:flex-end;gap:2px;padding:64px 70px 78px 18px;overflow:hidden}
   .char{flex:1;max-width:180px;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform .18s;position:relative}
-  .roster .char-seongho,.roster .char-seokju{max-width:215px}
   .char:hover{transform:translateY(-8px)}
   .char img,.char svg{width:100%;height:auto;max-height:430px;object-fit:contain;filter:drop-shadow(0 14px 16px rgba(0,0,0,.16))}
+  .roster .char img,.roster .char svg{width:auto;height:min(39vh,360px);max-width:none;max-height:none}
   .char .name{font-weight:900;margin-top:3px;font-size:14px;color:#2d2430;text-shadow:0 1px 0 rgba(255,255,255,.9)}
   .char .tag{font-size:10px;color:#885b7a;margin-bottom:4px;font-weight:800}
   .aff{width:86%;height:11px;background:#ffdfec;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.65)}
@@ -198,13 +198,13 @@
       gap:0;padding:0 6px;align-items:end;justify-items:center;overflow:hidden;
     }
     .roster .char{width:100%;max-width:118px;min-width:0}
-    .roster .char-seongho,.roster .char-seokju{max-width:118px}
     .roster .char:nth-child(odd){transform:translateX(8px)}
     .roster .char:nth-child(even){transform:translateX(-42px)}
     .roster .char:hover:nth-child(odd){transform:translateX(8px)}
     .roster .char:hover:nth-child(even){transform:translateX(-42px)}
     .char:hover{transform:none}
     .char img,.char svg{max-height:17vh;width:auto;max-width:100%;filter:drop-shadow(0 10px 12px rgba(0,0,0,.16))}
+    .roster .char img,.roster .char svg{height:17vh;width:auto;max-height:none;max-width:128px}
     .char .name{font-size:13px;margin-top:1px}
     .char .tag{display:block;font-size:10px;margin-bottom:3px}
     .aff{width:74%;height:10px}
@@ -299,7 +299,7 @@
    1순위: assets/characters/{id}_{mood}.png  (표정별 이미지)
    폴백 : 아래 BASE_IMG (표정 이미지가 없으면 자동으로 기존 일러스트 사용)
    ⇒ 표정 이미지를 안 넣어도 지금 바로 동작하고, 넣으면 자동 적용됩니다. */
-const BASE_IMG={hyeong:"assets/characters/jisung.png",jinha:"assets/characters/jinha.png",jisung:"assets/characters/seongho.png",chanhyung:"assets/characters/chanhyung.png",seongho:"assets/characters/seongho_new.png",seokju:"assets/characters/seokju.png"};
+const BASE_IMG={hyeong:"assets/characters/jisung.png",jinha:"assets/characters/jinha.png",jisung:"assets/characters/jisung_new.png",chanhyung:"assets/characters/chanhyung.png",seongho:"assets/characters/seongho_new.png",seokju:"assets/characters/seokju.png"};
 function imgTag(id,mood){const base=BASE_IMG[id]||"";return `<img src="assets/characters/${id}_${mood}.png" alt="" onerror="this.onerror=null;this.src='${base}'">`;}
 
 const CHARS=[
@@ -370,7 +370,7 @@ const TALK_SCRIPT={
 const SPRITE_PROMPTS={
  hyeong:"same character sheet, korean webtoon style, warm friendly ENFJ university senior, beige cardigan, bust-up close-up, expressions: gentle smile, worried, shy blush, bright confession smile, hand reaching forward, clean lineart, soft cel shading, transparent background",
  jinha:"same character sheet, korean webtoon style, bad-boy ISTP band vocalist, black layered hair, leather jacket, bust-up close-up, expressions: cool gaze, serious stare, faint smirk, shy glance away, hand in pocket or guitar strap gesture, transparent background",
- jisung:"same character sheet, korean webtoon style, quiet INTP engineering student, clear-frame glasses, dark neat hair, hoodie shirt, bust-up close-up, expressions: thinking, worried, shy blush, serious confession, adjusting glasses, transparent background",
+ jisung:"same character sheet, Korean webtoon manhwa style, quiet mysterious engineering-major university student, neat dark hair with soft bangs, clear-frame glasses, plaid checked button-up shirt over plain white tee, slim trousers, bust-up close-up, expressions: calm intelligent, worried, shy blush, serious confession, subtle hand gesture only, transparent background",
  chanhyung:"same character sheet, korean webtoon style, athletic ESFP streetwear senior, cap hoodie sneakers, bust-up close-up, expressions: bright grin, playful wink, serious caring, shy smile, tapping shoulder gesture, transparent background",
  seongho:"same character sheet, korean webtoon style, cheerful ENFP cheer squad campus leader, blue and white varsity cheer uniform, athletic build, bust-up close-up, expressions: bright crescent-eye smile, playful confidence, shy confession, energetic wink, transparent background",
  seokju:"same character sheet, korean webtoon style, quiet ISFJ childhood friend, gray oversized hoodie, soft messy black hair, sleepy gentle eyes, bust-up close-up, expressions: calm smile, worried caring, shy blush, serious confession, hands in hoodie pocket gesture, transparent background"
