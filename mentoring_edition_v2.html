@@ -57,7 +57,7 @@
   .char{flex:1;max-width:180px;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform .18s;position:relative}
   .char:hover{transform:translateY(-8px)}
   .char img,.char svg{width:100%;height:auto;max-height:430px;object-fit:contain;filter:drop-shadow(0 14px 16px rgba(0,0,0,.16))}
-  .roster .char img,.roster .char svg{width:auto;height:min(39vh,360px);max-width:none;max-height:none}
+  .roster .char img,.roster .char svg{width:auto;height:min(39vh,360px);max-width:none;max-height:none;object-position:bottom center}
   .char .name{font-weight:900;margin-top:3px;font-size:14px;color:#2d2430;text-shadow:0 1px 0 rgba(255,255,255,.9)}
   .char .tag{font-size:10px;color:#885b7a;margin-bottom:4px;font-weight:800}
   .aff{width:86%;height:11px;background:#ffdfec;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.65)}
@@ -103,9 +103,9 @@
   .bg-illus.grad-home{background:linear-gradient(180deg,#ffe9d6,#ffd9e6)}
   .bg-illus::after{content:"";position:absolute;inset:0;background:rgba(255,252,254,.16);pointer-events:none}
   .bg-illus.grad-intro::after{background:transparent}
-  .scene-chars{position:absolute;bottom:236px;left:0;right:0;display:flex;justify-content:center;gap:2%;z-index:1;padding:0 4%;transition:.3s}
-  .scene-chars .char{max-width:140px}
-  .scene-chars .char img,.scene-chars .char svg{max-height:320px}
+  .scene-chars{position:absolute;bottom:166px;left:0;right:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));justify-items:center;align-items:end;gap:4px;z-index:1;padding:0 12px;transition:.3s}
+  .scene-chars .char{width:100%;max-width:104px}
+  .scene-chars .char img,.scene-chars .char svg{width:auto;height:min(29vh,255px);max-width:100%;max-height:none;object-fit:contain;object-position:bottom center}
   .scene-chars .char.dim{opacity:.32;filter:grayscale(.4)}
   .scene-chars .char .name{color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5)}
   .solo{position:absolute;bottom:150px;left:0;right:0;display:flex;justify-content:center;z-index:1}
@@ -142,23 +142,14 @@
   /* ▼▼▼ 남주 확대 1:1 대화 (신규) ▼▼▼ */
   .focus-wrap{position:absolute;left:0;right:0;top:54px;bottom:150px;display:none;align-items:flex-start;justify-content:center;z-index:2;pointer-events:none;overflow:hidden}
   .focus-wrap.on{display:flex}
-  .focus-char{position:relative;height:100%;display:flex;align-items:flex-start;animation:focusIn .5s cubic-bezier(.2,.9,.2,1)}
-  .focus-char img{height:230%;width:auto;max-height:none;object-fit:contain;object-position:top center;
+  .focus-char{position:relative;height:100%;display:flex;align-items:flex-end;animation:focusIn .5s cubic-bezier(.2,.9,.2,1)}
+  .focus-char img{height:100%;width:auto;max-height:none;object-fit:contain;object-position:bottom center;
     filter:drop-shadow(0 18px 24px rgba(0,0,0,.30));animation:breathe 3.6s ease-in-out infinite}
   @keyframes focusIn{from{opacity:0;transform:translateY(30px) scale(.93)}to{opacity:1;transform:none}}
   @keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-  .focus-char.mood-shy img{filter:drop-shadow(0 18px 24px rgba(0,0,0,.30)) saturate(1.15) brightness(1.05)}
-  .focus-char.mood-serious img{filter:drop-shadow(0 18px 24px rgba(0,0,0,.30)) contrast(1.10) saturate(.92)}
-  .focus-char.mood-bright img{filter:drop-shadow(0 18px 24px rgba(0,0,0,.30)) brightness(1.08) saturate(1.06)}
-  .focus-char.mood-worry img{filter:drop-shadow(0 18px 24px rgba(0,0,0,.30)) saturate(.85)}
-  .focus-char.mood-smirk img,.focus-char.mood-cool img{filter:drop-shadow(0 18px 24px rgba(0,0,0,.30)) contrast(1.04)}
-  .focus-char.mood-shy::after{content:"";position:absolute;top:26%;left:50%;transform:translateX(-50%);
-    width:46%;height:10%;border-radius:50%;background:radial-gradient(circle,rgba(255,120,170,.5),rgba(255,120,170,0) 70%);pointer-events:none}
-  .focus-emote{position:absolute;top:8%;left:50%;transform:translateX(-50%);font-size:42px;z-index:3;pointer-events:none;opacity:0}
-  .focus-emote.pop{animation:emotePop 1.2s ease}
-  @keyframes emotePop{0%{opacity:0;transform:translateX(-50%) translateY(12px) scale(.6)}
-    22%{opacity:1;transform:translateX(-50%) translateY(-6px) scale(1.12)}70%{opacity:1}
-    100%{opacity:0;transform:translateX(-50%) translateY(-20px) scale(1)}}
+  .focus-char.mood-shy img,.focus-char.mood-serious img,.focus-char.mood-bright img,
+  .focus-char.mood-worry img,.focus-char.mood-smirk img,.focus-char.mood-cool img{
+    filter:drop-shadow(0 18px 24px rgba(0,0,0,.30))}
   /* ▲▲▲ */
 
   /* ENDING */
@@ -204,7 +195,7 @@
     .roster .char:hover:nth-child(even){transform:translateX(-42px)}
     .char:hover{transform:none}
     .char img,.char svg{max-height:17vh;width:auto;max-width:100%;filter:drop-shadow(0 10px 12px rgba(0,0,0,.16))}
-    .roster .char img,.roster .char svg{height:17vh;width:auto;max-height:none;max-width:128px}
+    .roster .char img,.roster .char svg{height:17vh;width:auto;max-height:none;max-width:128px;object-position:bottom center}
     .char .name{font-size:13px;margin-top:1px}
     .char .tag{display:block;font-size:10px;margin-bottom:3px}
     .aff{width:74%;height:10px}
@@ -214,11 +205,11 @@
       display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
     .fab .btn{padding:12px 4px;font-size:12px;min-width:0;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .overlay{padding:10px}.panel{max-height:92vh;border-radius:18px;padding:18px}
-    .scene-chars{bottom:250px;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:0 8px;align-items:end}
-    .scene-chars .char{max-width:76px}
-    .scene-chars .char img,.scene-chars .char svg{max-height:18vh}
+    .scene-chars{bottom:250px;display:grid;grid-template-columns:repeat(3,1fr);gap:2px 6px;padding:0 8px;align-items:end;justify-items:center}
+    .scene-chars .char{width:100%;max-width:78px}
+    .scene-chars .char img,.scene-chars .char svg{height:13vh;width:auto;max-height:none;max-width:100%;object-fit:contain;object-position:bottom center}
     .focus-wrap{top:118px;bottom:250px}
-    .focus-char img{height:250%}
+    .focus-char img{height:100%}
     .dialog{min-height:250px;padding:14px 14px 16px}
     .dialog .line{font-size:14px;min-height:42px}
     .choice{font-size:12px;padding:9px 10px}
@@ -270,7 +261,6 @@
       <div class="discuss" id="discuss"></div>
       <div class="scene-chars" id="sceneChars"></div>
       <div class="focus-wrap" id="focusWrap"><div class="focus-char" id="focusChar"></div></div>
-      <div class="focus-emote" id="focusEmote"></div>
       <div class="solo" id="soloFig" style="display:none"></div>
       <div class="narration" id="narration" onclick="continueQuest()"><div class="inner"><div id="narFig"></div><div class="txt" id="narText"></div><div class="hint">화면을 누르면 계속</div></div></div>
       <div class="dialog">
@@ -305,13 +295,12 @@ function imgTag(id,mood){const base=BASE_IMG[id]||"";return `<img src="assets/ch
 const CHARS=[
  {id:"hyeong",name:"형규",tag:"다정한 과 선배",mbti:"ENFJ",club:"과 학생회",desc:"베이지·아이보리 가디건과 셔츠의 포멀한 캠퍼스 선배. 사람 많은 중심에서 후배를 자연스럽게 챙긴다.",like:"사람 챙기기, 과방 커피 타주기, 후배 밥 사주기, 잔잔한 어쿠스틱, 단체사진",dislike:"분위기 깨는 사람, 뒷담화, 약속 안 지키기, 소외되는 사람 방치"},
  {id:"jinha",name:"진하",tag:"나쁜 남자 밴드부 보컬",mbti:"ISTP",club:"밴드부",desc:"블랙 레이어드 헤어, 가죽 재킷과 체인이 어울리는 락시크 보컬. 말은 짧지만 배려는 정확하다.",like:"합주·라이브, 새벽 드라이브, 가죽 재킷, 솔직한 사람, 무심한 배려",dislike:"가식, 오지랖, 규칙 강요, 돌려 말하기"},
- {id:"jisung",name:"지성",tag:"조용한 과 동기",mbti:"INFP",club:"보드게임 동아리",desc:"내린 앞머리와 투명 뿔테 안경, 체크 셔츠와 와이드 팬츠가 어울리는 공대 동기. 조용하지만 여주를 몰래 챙기고 오래전부터 마음을 숨기고 있다.",like:"문제 풀이, 조용한 카페, 논리 퍼즐, 여주 몰래 챙기기",dislike:"시끄러운 자리, 근거 없는 주장, 억지 텐션, 주목받기"},
+ {id:"jisung",name:"지성",tag:"조용한 과 동기",mbti:"INFP",club:"보드게임 동아리",desc:"슬릭컷과 투명 뿔테 안경, 체크 셔츠와 와이드 팬츠, 검정 스니커즈가 어울리는 공대 동기. 조용하지만 여주를 몰래 챙기고 오래전부터 마음을 숨기고 있다.",like:"문제 풀이, 조용한 카페, 논리 퍼즐, 여주 몰래 챙기기",dislike:"시끄러운 자리, 근거 없는 주장, 억지 텐션, 주목받기"},
  {id:"chanhyung",name:"찬형",tag:"유쾌한 농구부 주장",mbti:"ENTP",club:"농구부",desc:"오버핏 스트릿룩과 스니커즈가 잘 어울리는 에너지형 선배. 농구부를 챙기며 분위기를 살린다.",like:"농구, 스트릿 패션, 팀 챙기기, 에너지 넘치는 하루, 즉흥 약속",dislike:"축 처진 분위기, 몸 사리는 것, 약속 파토, 재미없는 것"},
  {id:"seongho",name:"성호",tag:"연세대학교 응원단 단장",mbti:"ENFP",club:"응원단",desc:"파란색과 흰색 응원단 유니폼이 잘 어울리는 캠퍼스 리더. 큰 웃음과 에너지로 주변 사람을 자연스럽게 끌어당긴다.",like:"응원 연습, 단체 구호, 봄 캠퍼스 산책, 후배 챙기기, 무대 위 박수 소리",dislike:"팀 분위기 깨는 말, 소극적인 태도, 약속 없는 결석, 진심 없는 칭찬"},
  {id:"seokju",name:"석주",tag:"편안한 소꿉친구 ",mbti:"ISFJ",club:"건축봉사동아리",desc:"회색 오버핏 후드와 청바지가 익숙한 소꿉친구 같은 동기. 조용하지만 필요한 순간에는 늘 옆에 있어주는 안정감이 있다.",like:"편의점 간식, 해 질 녘 골목, 늦은 밤 산책, 오래된 약속, 조용한 위로",dislike:"갑작스러운 주목, 빈말, 무리한 부탁, 혼자 참는 사람을 그냥 두기"}
 ];
 const MOOD={smile:"평온",bright:"환함",worry:"걱정",shy:"설렘",serious:"진지",cool:"시크",smirk:"픽 웃음",play:"장난"};
-const EMOTE={smile:"🙂",bright:"✨",worry:"💦",shy:"💗",serious:"❗",cool:"🎧",smirk:"😏",play:"😆"};
 function art(id,mood="smile"){return `<div class="mood-chip">${MOOD[mood]||"표정"}</div>${imgTag(id,mood)}`;}
 function silhouette(){return `<img src="assets/characters/heroine_silhouette.png" alt="여자 주인공 실루엣">`;}
 function bgHTML(kind){const IMG={main:"assets/backgrounds/yonsei_main.png",course:"assets/backgrounds/class.png",club:"assets/backgrounds/ot.png",mt:"assets/backgrounds/mt.png",travel:"assets/backgrounds/yonsei_main.png",festival:"assets/backgrounds/festival.png",booth:"assets/backgrounds/booth.png"};return IMG[kind]?`<img src="${IMG[kind]}" alt="">`:"";}
@@ -356,15 +345,16 @@ const TALK_SCRIPT={
 const SPRITE_PROMPTS={
  hyeong:"same character sheet, korean webtoon style, warm friendly ENFJ university senior, beige cardigan, bust-up close-up, expressions: gentle smile, worried, shy blush, bright confession smile, hand reaching forward, clean lineart, soft cel shading, transparent background",
  jinha:"same character sheet, korean webtoon style, bad-boy ISTP band vocalist, black layered hair, leather jacket, bust-up close-up, expressions: cool gaze, serious stare, faint smirk, shy glance away, hand in pocket or guitar strap gesture, transparent background",
- jisung:"same character sheet, Korean webtoon manhwa style, quiet mysterious engineering-major university student, soft dark hair worn down with natural bangs, clear-frame glasses, plaid checked button-up shirt over plain white tee, loose wide-leg trousers, black leather loafers, bust-up close-up, expressions: calm intelligent, worried, shy blush, serious confession, subtle hand gesture only, identical outfit hairstyle body pose and framing, transparent background",
+ jisung:"same character sheet, Korean webtoon manhwa style, quiet mysterious engineering-major university student, clear-frame glasses, modern men's slick cut hairstyle with short tapered sides and textured top swept back or side, plaid checked button-up shirt over plain white tee, loose wide-leg trousers, black sneakers, bust-up close-up, expressions: calm intelligent, worried, shy blush, serious confession, subtle hand gesture only, identical outfit hairstyle body pose and framing, transparent background",
  chanhyung:"same character sheet, korean webtoon style, athletic ESFP streetwear senior, cap hoodie sneakers, bust-up close-up, expressions: bright grin, playful wink, serious caring, shy smile, tapping shoulder gesture, transparent background",
- seongho:"same character sheet, korean webtoon style, cheerful ENFP cheer squad campus leader, blue and white varsity cheer uniform, athletic build, bust-up close-up, expressions: bright crescent-eye smile, playful confidence, shy confession, energetic wink, transparent background",
+ seongho:"same character sheet, korean webtoon style, cheerful ENFP cheer squad campus leader, modest navy blue and white college cheer squad track jacket or clean uniform jacket, long sleeves, long pants, athletic build, bust-up close-up, expressions: bright crescent-eye smile, playful confidence, shy confession, energetic wink, transparent background",
  seokju:"same character sheet, korean webtoon style, quiet ISFJ childhood friend, gray oversized hoodie, soft messy black hair, sleepy gentle eyes, bust-up close-up, expressions: calm smile, worried caring, shy blush, serious confession, hands in hoodie pocket gesture, transparent background"
 };
 
 let aff={hyeong:0,jinha:0,jisung:0,chanhyung:0,seongho:0,seokju:0}, consensus=0, unlocked=1, firstDream="", done={}, cur={};
 const $=id=>document.getElementById(id);
-function go(s){document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));$(s).classList.add('active');document.querySelectorAll('.top-control').forEach(b=>b.classList.toggle('show',s!=='title'));}
+function closeOverlays(){document.querySelectorAll('.overlay.active').forEach(e=>e.classList.remove('active'));}
+function go(s){closeOverlays();document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));$(s).classList.add('active');document.querySelectorAll('.top-control').forEach(b=>b.classList.toggle('show',s!=='title'));}
 function goBack(){if($('play').classList.contains('active')){hideFocus();renderMain();go('main');return;} if($('ending').classList.contains('active')){renderMain();go('main');return;} if($('main').classList.contains('active')){go('title');return;} go('main');}
 function open_(id){$(id).classList.add('active');}
 function close_(id){$(id).classList.remove('active');}
@@ -385,7 +375,6 @@ function showFocus(cid,mood){
   fc.innerHTML=imgTag(cid,mood);
   fc.style.animation='none';void fc.offsetWidth;fc.style.animation='';   // 등장 애니메이션 재생
   $('focusWrap').classList.add('on');
-  const em=$('focusEmote');em.textContent=EMOTE[mood]||'';em.classList.remove('pop');void em.offsetWidth;em.classList.add('pop');
 }
 function hideFocus(){$('focusWrap').classList.remove('on');$('sceneChars').style.display='';}
 
