@@ -399,7 +399,7 @@ function continueQuest(){$('narration').classList.remove('active');hideFocus();c
   else{CHARS.forEach(c=>{const line=q.lines[c.id];const b=document.createElement('button');b.className='choice';b.innerHTML=`<b>${c.name}</b> — ${line[1]}`;b.onclick=()=>pickLead(c.id);ch.appendChild(b);});}
 }
 
-function pickSolo(op){firstDream=op[0];$('dLine').textContent=op[1]+;$('dChoices').innerHTML='';completeQuest(null,12);}
+function pickSolo(op){firstDream=op[0];$('dLine').textContent=op[1];$('dChoices').innerHTML='';completeQuest(null,12);}
 
 /* mapped 퀘스트: 선택 → 해당 남주 확대 */
 function resolveMapped(op){const [cid,mood,,result]=op;const c=CHARS.find(x=>x.id===cid);showFocus(cid,mood);$('dWho').textContent=c.name;$('dLine').textContent=result;$('dChoices').innerHTML='';aff[cid]=Math.min(100,aff[cid]+20);completeQuest(cid,14,20);}
