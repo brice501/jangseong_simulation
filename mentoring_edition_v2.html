@@ -53,7 +53,7 @@
     box-shadow:0 6px 16px rgba(0,38,84,.1);min-width:150px}
   .consensus .bar{height:8px;background:#dfe8f5;border-radius:6px;overflow:hidden;margin-top:3px}
   .consensus .bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#6fa8ff,var(--navy));transition:width .6s}
-  .roster{flex:1;display:flex;justify-content:center;align-items:flex-end;gap:2px;padding:64px 70px 78px 18px;overflow:hidden}
+  .roster{flex:1;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));justify-items:center;align-items:end;gap:0;padding:64px 24px 78px 24px;overflow:hidden}
   .char{flex:1;max-width:180px;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform .18s;position:relative}
   .char:hover{transform:translateY(-8px)}
   .char img,.char svg{width:100%;height:auto;max-height:430px;object-fit:contain;filter:drop-shadow(0 14px 16px rgba(0,0,0,.16))}
@@ -83,6 +83,17 @@
   .stat-card .info{font-size:13px;line-height:1.55}
   .stat-card .info b{color:var(--pink-d)}
   .mbti{display:inline-block;background:var(--pink);color:#fff;border-radius:8px;padding:1px 8px;font-size:12px;font-weight:800;margin-left:6px}
+  /* DM */
+  .dm-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:8px}
+  .dm-tab{flex:0 0 auto;border:1.5px solid #ffd7e8;background:#fff6fb;border-radius:999px;padding:5px 13px;font-weight:800;font-size:12px;color:var(--pink-d);cursor:pointer}
+  .dm-tab.on{background:var(--pink);color:#fff;border-color:var(--pink)}
+  .dm-log{height:300px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px;background:#faf3f8;border-radius:14px}
+  .dm-msg{max-width:80%;padding:9px 12px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+  .dm-msg.me{align-self:flex-end;background:var(--pink);color:#fff;border-bottom-right-radius:4px}
+  .dm-msg.him{align-self:flex-start;background:#fff;border:1px solid #ffe0ee;border-bottom-left-radius:4px}
+  .dm-input{display:flex;gap:8px;margin-top:8px}
+  .dm-input input{flex:1;border:1.5px solid #ffcfe4;border-radius:999px;padding:10px 14px;font-family:inherit;font-size:14px}
+  .dm-key{font-size:11px;color:#a07;margin-top:8px;cursor:pointer;text-decoration:underline;text-align:center}
 
   .qlist{display:grid;gap:10px}
   .qitem{display:flex;align-items:center;gap:12px;background:#fff6fb;border:1.5px solid #ffe0ee;border-radius:14px;padding:12px 14px;cursor:pointer;transition:.15s}
@@ -90,8 +101,7 @@
   .qitem .ico{font-size:24px}
   .qitem .qt{font-weight:800;font-size:15px}
   .qitem .qd{font-size:12px;color:#a07}
-  .qitem.done{opacity:.5}
-  .qitem.done::after{content:'완료 ✓';margin-left:auto;color:#7bbf6a;font-weight:800;font-size:12px}
+  .qitem.done{opacity:.62}
   .qitem.lock{opacity:.42;cursor:not-allowed}
 
   /* QUEST PLAY */
@@ -121,6 +131,12 @@
   .choice:hover{background:#ffe3f1;border-color:var(--pink)}
   .choice b{color:var(--navy)}
   .choice.back{background:#eef4ff;border-color:#cfe0ff;color:var(--navy);font-weight:800}
+  /* 선지 풀스크린 2x3 */
+  .dialog.pick{top:54px;overflow:auto;display:flex;flex-direction:column}
+  .choices.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;flex:1;align-content:start}
+  .dialog.pick .choice{font-size:17px;font-weight:700;padding:8px 16px;min-height:78px;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:16px;line-height:1.45}
+  .dialog.pick .choice b{display:block}
+  .dialog.pick .line{font-size:16px}
   .vote{margin-top:8px;background:#eef4ff;border:1.5px solid #cfe0ff;border-radius:12px;padding:10px 13px;font-size:13px;color:var(--navy)}
   .vote .dots{font-size:17px;letter-spacing:2px;margin-top:3px}
   .narration{position:absolute;inset:0;z-index:6;background:radial-gradient(circle at 50% 28%,#303654,#05060b 78%);
@@ -166,6 +182,18 @@
   #ending .end-actions{position:absolute;bottom:20px;left:0;right:0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
   .fall{position:absolute;top:-30px;font-size:22px;animation:fall linear infinite;z-index:0}
   @keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+
+  /* INTRO (남주 소개) */
+  #intro{align-items:center;justify-content:flex-end;text-align:center;padding:18px;overflow:hidden;background:linear-gradient(180deg,#eaf1ff,#ffe9f4)}
+  .intro-count{position:absolute;top:16px;right:18px;background:rgba(255,255,255,.9);border-radius:999px;padding:6px 13px;font-weight:800;color:var(--pink-d);font-size:12px;z-index:3}
+  .intro-fig{position:absolute;top:20px;left:0;right:0;bottom:214px;display:flex;align-items:flex-end;justify-content:center;z-index:1}
+  .intro-fig img{height:100%;width:auto;object-fit:contain;object-position:bottom center;filter:drop-shadow(0 14px 20px rgba(0,0,0,.22))}
+  .intro-card{position:relative;z-index:2;width:100%;max-width:560px;background:rgba(255,255,255,.97);border:3px solid var(--pink);border-radius:22px;padding:16px 20px;box-shadow:var(--shadow);margin-bottom:12px}
+  .intro-card .in-name{font-size:22px;font-weight:900;color:var(--pink-d)}
+  .intro-card .in-name span{font-size:13px;color:#885b7a;font-weight:800}
+  .intro-card .in-row{font-size:14px;line-height:1.55;margin-top:7px;text-align:left;color:#4a3a45}
+  .intro-card .in-row b{color:var(--navy);margin-right:6px}
+  #intro .btn{position:relative;z-index:2;margin-bottom:8px}
 
   .toast{position:absolute;top:60px;left:50%;transform:translateX(-50%);z-index:30;background:var(--ink);color:#fff;padding:10px 18px;border-radius:30px;font-weight:700;font-size:13px;opacity:0;transition:.3s;pointer-events:none}
   .toast.show{opacity:1;top:70px}
@@ -236,7 +264,7 @@
     <h1>두근두근 대학생활</h1>
     <div class="sub">장성이들의 스무살<br>두근두근 대학생활 대작전</div>
     <div class="title-btns">
-      <button class="btn" onclick="go('main')">시작하기 ▶</button>
+      <button class="btn" onclick="startIntro()">시작하기 ▶</button>
     </div>
   </section>
 
@@ -244,12 +272,12 @@
   <section class="screen" id="main">
     <div class="topbar">
       <div class="brand"><img src="assets/logo/yonsei_symbol.jpg" alt="연세대"><div class="t"><b>연세대학교</b><span>Yonsei University</span></div></div>
-      <div class="consensus">✨ 스무살 로망도 <span id="conNum">0</span>/100<div class="bar"><i id="conBar"></i></div></div>
     </div>
     <div class="roster" id="roster"></div>
     <div class="fab">
       <button class="btn" onclick="openQuests()">📋 퀘스트</button>
       <button class="btn ghost" onclick="openStatus()">💬 상태창</button>
+      <button class="btn navy" onclick="openDM()">💌 DM</button>
     </div>
   </section>
 
@@ -263,7 +291,7 @@
       <div class="focus-wrap" id="focusWrap"><div class="focus-char" id="focusChar"></div></div>
       <div class="solo" id="soloFig" style="display:none"></div>
       <div class="narration" id="narration" onclick="continueQuest()"><div class="inner"><div id="narFig"></div><div class="txt" id="narText"></div><div class="hint">화면을 누르면 계속</div></div></div>
-      <div class="dialog">
+      <div class="dialog" id="dialog">
         <div class="who" id="dWho"></div>
         <div class="line" id="dLine"></div>
         <div class="choices" id="dChoices"></div>
@@ -274,12 +302,27 @@
   <!-- ENDING -->
   <section class="screen" id="ending"></section>
 
+  <!-- INTRO (남주 소개) -->
+  <section class="screen" id="intro">
+    <div class="intro-count" id="introCount"></div>
+    <div class="intro-fig" id="introFig"></div>
+    <div class="intro-card" id="introCard"></div>
+    <button class="btn" id="introNext" onclick="introNext()">다음 ▶</button>
+  </section>
+
   <!-- OVERLAYS -->
   <div class="overlay" id="ovStatus"><div class="panel"><button class="x" onclick="close_('ovStatus')">×</button><h2>💬 남주 소개</h2><div id="statusList"></div></div></div>
 
   <div class="overlay" id="ovQuest"><div class="panel"><button class="x" onclick="close_('ovQuest')">×</button>
     <h2>📋 스무살 로망 퀘스트</h2>
     <div class="qlist" id="questList"></div></div></div>
+
+  <div class="overlay" id="ovDM"><div class="panel"><button class="x" onclick="close_('ovDM')">×</button>
+    <h2>💌 DM — 남주와 대화</h2>
+    <div class="dm-tabs" id="dmTabs"></div>
+    <div class="dm-log" id="dmLog"></div>
+    <div class="dm-input"><input id="dmText" placeholder="메시지 입력…" onkeydown="if(event.key==='Enter')sendDM()"><button class="btn" onclick="sendDM()">전송</button></div>
+    <div class="dm-key" id="dmKeyBtn" onclick="setGeminiKey()"></div></div></div>
 
   <div class="toast" id="toast"></div>
 </div>
@@ -301,7 +344,7 @@ const CHARS=[
  {id:"seokju",name:"석주",tag:"편안한 소꿉친구 ",mbti:"ISFJ",club:"건축봉사동아리",desc:"회색 오버핏 후드와 청바지가 익숙한 소꿉친구 같은 동기. 조용하지만 필요한 순간에는 늘 옆에 있어주는 안정감이 있다.",like:"편의점 간식, 해 질 녘 골목, 늦은 밤 산책, 오래된 약속, 조용한 위로",dislike:"갑작스러운 주목, 빈말, 무리한 부탁, 혼자 참는 사람을 그냥 두기"}
 ];
 const MOOD={smile:"평온",bright:"환함",worry:"걱정",shy:"설렘",serious:"진지",cool:"시크",smirk:"픽 웃음",play:"장난"};
-function art(id,mood="smile"){return `<div class="mood-chip">${MOOD[mood]||"표정"}</div>${imgTag(id,mood)}`;}
+function art(id,mood="smile"){return imgTag(id,mood);}
 function silhouette(){return `<img src="assets/characters/heroine_silhouette.png" alt="여자 주인공 실루엣">`;}
 function bgHTML(kind){const IMG={main:"assets/backgrounds/yonsei_main.png",course:"assets/backgrounds/class.png",club:"assets/backgrounds/ot.png",mt:"assets/backgrounds/mt.png",travel:"assets/backgrounds/yonsei_main.png",festival:"assets/backgrounds/festival.png",booth:"assets/backgrounds/booth.png"};return IMG[kind]?`<img src="${IMG[kind]}" alt="">`:"";}
 
@@ -360,15 +403,16 @@ function open_(id){$(id).classList.add('active');}
 function close_(id){$(id).classList.remove('active');}
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1900);}
 
-function renderMain(){const r=$('roster');r.innerHTML='';CHARS.forEach(c=>{const d=document.createElement('div');d.className='char char-'+c.id;d.innerHTML=`${art(c.id)}<div class="name">${c.name}</div><div class="tag">${c.tag}</div>`;d.onclick=()=>openStatus();r.appendChild(d);});$('conNum').textContent=consensus;$('conBar').style.width=Math.min(100,consensus)+'%';}
+function renderMain(){const r=$('roster');r.innerHTML='';CHARS.forEach(c=>{const d=document.createElement('div');d.className='char char-'+c.id;d.innerHTML=`${art(c.id)}<div class="name">${c.name}</div><div class="tag">${c.tag}</div>`;d.onclick=()=>openStatus();r.appendChild(d);});}
 function openStatus(){const b=$('statusList');b.innerHTML='';CHARS.forEach(c=>{const card=document.createElement('div');card.className='stat-card';card.innerHTML=`${imgTag(c.id,'smile')}<div class="info"><b>${c.name}</b> · ${c.tag}<span class="mbti">${c.mbti}</span><br>${c.desc}<br><b>동아리</b> : ${c.club}<br><b>좋아하는 것</b> : ${c.like}<br><b>싫어하는 것</b> : ${c.dislike}<br><b>현재 관계</b> : 아직은 비밀. 축제 부스에서 마음이 드러나요.</div>`;b.appendChild(card);});open_('ovStatus');}
-function openQuests(){const l=$('questList');l.innerHTML='';QUESTS.forEach((q,i)=>{const lock=i>=unlocked;const it=document.createElement('div');it.className='qitem'+(done[q.id]?' done':'')+(lock?' lock':'');it.innerHTML=`<div class="ico">${lock?'🔒':q.ico}</div><div><div class="qt">${q.title}</div><div class="qd">${lock?'이전 퀘스트 완료 후 열림':q.sub}</div></div>`;it.onclick=()=>{if(lock){toast('앞 퀘스트부터 진행해줘 ✨');return;}close_('ovQuest');startQuest(q.id);};l.appendChild(it);});open_('ovQuest');}
+function openQuests(){const l=$('questList');l.innerHTML='';QUESTS.forEach((q,i)=>{const lock=i>=unlocked;const it=document.createElement('div');it.className='qitem'+(done[q.id]?' done':'')+(lock?' lock':'');it.innerHTML=`<div class="ico">${lock?'🔒':q.ico}</div><div><div class="qt">${q.title}</div><div class="qd">${lock?'이전 퀘스트 완료 후 열림':(done[q.id]?'완료':'미완료')}</div></div>`;it.onclick=()=>{if(lock){toast('앞 퀘스트부터 진행해줘 ✨');return;}close_('ovQuest');startQuest(q.id);};l.appendChild(it);});open_('ovQuest');}
 
 /* 4명 나란히 보기 (선택 단계) */
 function renderScene(active,mood="smile"){hideFocus();const s=$('sceneChars');s.style.display='';s.innerHTML='';CHARS.forEach(c=>{const d=document.createElement('div');d.className='char char-'+c.id+(active&&active!==c.id?' dim':'')+(active===c.id?' mood-'+mood:'');d.innerHTML=`${art(c.id,active===c.id?mood:"smile")}<div class="name">${c.name}</div>`;s.appendChild(d);});}
 
 /* ▼ 남주 1명 확대 + 표정/이모트 전환 */
 function showFocus(cid,mood){
+  exitPickMode();
   $('sceneChars').style.display='none';
   const fc=$('focusChar');
   fc.className='focus-char mood-'+mood;
@@ -380,15 +424,15 @@ function hideFocus(){$('focusWrap').classList.remove('on');$('sceneChars').style
 
 function startQuest(qid){const q=QUESTS.find(x=>x.id===qid);cur={q,script:null,scriptIndex:0};hideFocus();$('playBg').className='bg-illus';$('playBg').innerHTML=bgHTML(q.bg);$('qhead').textContent=`${q.ico} ${q.title}`;$('discuss').innerHTML='';$('sceneChars').innerHTML='';$('soloFig').style.display='none';$('dWho').textContent='';$('dLine').textContent='';$('dChoices').innerHTML='';$('narFig').innerHTML=silhouette();$('narText').textContent=q.narration;$('narration').classList.add('active');go('play');}
 
-function continueQuest(){$('narration').classList.remove('active');hideFocus();const q=cur.q;
-  if(q.mode==="solo"){ $('sceneChars').style.display='none';$('soloFig').style.display='';$('soloFig').innerHTML=silhouette();$('dWho').textContent=q.who;$('dLine').textContent=q.scene;const ch=$('dChoices');ch.innerHTML='';q.options.forEach(op=>{const b=document.createElement('button');b.className='choice';b.textContent=op[0];b.onclick=()=>pickSolo(op);ch.appendChild(b);});return;}
+function continueQuest(){$('narration').classList.remove('active');hideFocus();exitPickMode();const q=cur.q;
+  if(q.mode==="solo"){ $('sceneChars').style.display='none';$('soloFig').style.display='';$('soloFig').innerHTML=silhouette();$('dWho').textContent=q.who;$('dLine').textContent=q.scene;const ch=$('dChoices');ch.innerHTML='';q.options.forEach(op=>{const b=document.createElement('button');b.className='choice';b.textContent=op[0];b.onclick=()=>pickSolo(op);ch.appendChild(b);});enterPickMode();return;}
   $('soloFig').style.display='none';renderScene(null);$('dWho').textContent='상황';$('dLine').textContent=q.scene;const ch=$('dChoices');ch.innerHTML='';
-  if(q.mode==="mapped"){q.options.forEach(op=>{const b=document.createElement('button');b.className='choice';b.textContent=op[2];b.onclick=()=>resolveMapped(op);ch.appendChild(b);});}
+  if(q.mode==="mapped"){q.options.forEach(op=>{const b=document.createElement('button');b.className='choice';b.textContent=op[2];b.onclick=()=>resolveMapped(op);ch.appendChild(b);});enterPickMode();}
   else if(q.final){const top=topAff();$('dLine').textContent='부스 마감 직전, 누군가 뒤에서 조심스럽게 등을 두드린다. 돌아보자 가장 오래 마음이 쌓인 사람이 서 있다.';pickLead(top);}
-  else{CHARS.forEach(c=>{const line=q.lines[c.id];const b=document.createElement('button');b.className='choice';b.innerHTML=`<b>${c.name}</b> — ${line[1]}`;b.onclick=()=>pickLead(c.id);ch.appendChild(b);});}
+  else{CHARS.forEach(c=>{const line=q.lines[c.id];const b=document.createElement('button');b.className='choice';b.innerHTML=`<b>${c.name}</b> — ${line[1]}`;b.onclick=()=>pickLead(c.id);ch.appendChild(b);});enterPickMode();}
 }
 
-function pickSolo(op){firstDream=op[0];$('dLine').textContent=op[1];$('dChoices').innerHTML='';completeQuest(null,12);}
+function pickSolo(op){exitPickMode();firstDream=op[0];$('dLine').textContent=op[1];$('dChoices').innerHTML='';completeQuest(null,12);}
 
 /* mapped 퀘스트: 선택 → 해당 남주 확대 */
 function resolveMapped(op){const [cid,mood,,result]=op;const c=CHARS.find(x=>x.id===cid);showFocus(cid,mood);$('dWho').textContent=c.name;$('dLine').textContent=result;$('dChoices').innerHTML='';aff[cid]=Math.min(100,aff[cid]+20);completeQuest(cid,14,20);}
@@ -416,6 +460,33 @@ function topAff(){return Object.keys(aff).reduce((a,b)=>aff[a]>=aff[b]?a:b);}
 function ending(cid){cid=cid||topAff();const c=CHARS.find(x=>x.id===cid),conf={hyeong:"형규가 뒤에서 조심스럽게 등을 두드린다. “스무살 첫날부터 지금까지, 사실 계속 너였어요. 선배 말고, 남자친구로 있어도 될까요?”",jinha:"진하가 말없이 다가와 등을 툭 두드린다. “나 이런 말 진짜 안 하는데… 너 아니면 안 되겠어. 나랑 사귀자.”",jisung:"지성이 망설이다 네 등을 살짝 두드린다. “MT 때 못 한 말, 지금 할게. …나 너 오래전부터 좋아했어. 이번엔 기억해줘.”",chanhyung:"찬형이 장난처럼 등을 톡톡 두드리다 진지하게 웃는다. “너랑 있으면 매일이 축제야. 이 여름, 나랑 제대로 사귀자.”",seongho:"성호가 환한 웃음으로 네 등을 톡톡 두드린다. “오늘 제일 크게 외치고 싶은 이름이 생겼어. 네 이름. 나랑 같이, 매일 응원받는 연애 해볼래?”",seokju:"석주가 따뜻한 캔커피를 들고 네 등을 조심스럽게 두드린다. “오래 알고 지냈는데도 오늘은 처음처럼 떨려. 나 너 좋아해. 이제 그냥 친구 말고, 네 옆자리 하고 싶어.”"}[cid];const e=$('ending');e.innerHTML=`<div class="ending-scene"><div class="speech"><span class="tag">축제 부스 · 가장 오래 마음이 쌓인 사람</span>${conf}</div><div class="back-pat">🤚</div>${imgTag(cid,"shy")}<div class="who">${c.name} 엔딩 · 등을 두드린 고백 💗</div><div class="end-actions"><button class="btn" onclick="toast('🎉 ${c.name}와 해피엔딩!')">헐… 나도 좋아해 💗</button><button class="btn ghost" onclick="resetGame()">처음부터</button></div></div>`;for(let i=0;i<16;i++){const h=document.createElement('div');h.className='fall';h.textContent=['💗','💕','💖','✨'][i%4];h.style.left=(Math.random()*100)+'%';h.style.animationDuration=(3+Math.random()*3)+'s';h.style.animationDelay=(Math.random()*2)+'s';e.appendChild(h);}go('ending');}
 
 function resetGame(){aff={hyeong:0,jinha:0,jisung:0,chanhyung:0,seongho:0,seokju:0};consensus=0;unlocked=1;firstDream="";done={};renderMain();go('title');}
+
+/* ===== 선지 풀스크린(2x3) 모드 ===== */
+function enterPickMode(){$('sceneChars').style.display='none';const d=$('dialog');if(d)d.classList.add('pick');$('dChoices').classList.add('grid');}
+function exitPickMode(){const d=$('dialog');if(d)d.classList.remove('pick');$('dChoices').classList.remove('grid');}
+
+/* ===== 남주 소개 인트로 ===== */
+let introIdx=0;
+function startIntro(){introIdx=0;go('intro');renderIntro();}
+function renderIntro(){const c=CHARS[introIdx];$('introFig').innerHTML=imgTag(c.id,'smile');$('introCard').innerHTML=`<div class="in-name">${c.name} <span>· ${c.tag} · ${c.mbti}</span></div><div class="in-row"><b>💙 좋아하는 것</b>${c.like}</div><div class="in-row"><b>💔 싫어하는 것</b>${c.dislike}</div>`;$('introCount').textContent=`${introIdx+1} / ${CHARS.length}`;$('introNext').textContent=introIdx<CHARS.length-1?'다음 ▶':'게임 시작 ▶';}
+function introNext(){if(introIdx<CHARS.length-1){introIdx++;renderIntro();}else{renderMain();go('main');}}
+
+/* ===== DM (6인 페르소나 대화 · 제미나이 선택) ===== */
+const DM_HISTORY={};CHARS.forEach(c=>DM_HISTORY[c.id]=[]);
+let dmTarget=CHARS[0].id;
+let GEMINI_KEY=(function(){try{return localStorage.getItem('gemini_key')||"";}catch(e){return"";}})();
+function openDM(){renderDMTabs();switchDM(dmTarget);updateKeyBtn();open_('ovDM');}
+function updateKeyBtn(){$('dmKeyBtn').textContent=GEMINI_KEY?'🔑 제미나이 연결됨 · 키 변경':'🔑 제미나이 API 키 설정 (없으면 기본 답변으로 작동)';}
+function setGeminiKey(){const k=prompt('구글 제미나이 API 키를 입력하세요.\n(비워두면 기본 답변으로 작동. 키는 이 브라우저에만 저장돼요.)',GEMINI_KEY||'');if(k===null)return;GEMINI_KEY=k.trim();try{if(GEMINI_KEY)localStorage.setItem('gemini_key',GEMINI_KEY);else localStorage.removeItem('gemini_key');}catch(e){}updateKeyBtn();toast(GEMINI_KEY?'제미나이 연결됨 ✨':'기본 답변 모드');}
+function renderDMTabs(){const t=$('dmTabs');t.innerHTML='';CHARS.forEach(c=>{const b=document.createElement('div');b.className='dm-tab'+(c.id===dmTarget?' on':'');b.textContent=c.name;b.onclick=()=>switchDM(c.id);t.appendChild(b);});}
+function switchDM(cid){dmTarget=cid;renderDMTabs();const c=CHARS.find(x=>x.id===cid);if(DM_HISTORY[cid].length===0)DM_HISTORY[cid].push({from:'him',text:firstDM(cid)});renderDMLog();$('dmText').placeholder=`${c.name}에게 메시지…`;}
+function firstDM(cid){return {hyeong:'오늘 하루 어땠어요? 무리한 건 없고요?',jinha:'…자냐. 별건 아니고.',jisung:'그… 자기 전에 물 마셨어? 그냥 궁금해서.',chanhyung:'야야 지금 뭐해?ㅋㅋ 나 심심해',seongho:'오늘도 파이팅!! 네 생각나서 연락했어',seokju:'집 잘 들어갔어? 늦었더라.'}[cid]||'안녕!';}
+function renderDMLog(){const log=$('dmLog');log.innerHTML='';DM_HISTORY[dmTarget].forEach(m=>{const d=document.createElement('div');d.className='dm-msg '+(m.from==='me'?'me':'him');d.textContent=m.text;log.appendChild(d);});log.scrollTop=log.scrollHeight;}
+async function sendDM(){const inp=$('dmText');const text=inp.value.trim();if(!text)return;const cid=dmTarget;DM_HISTORY[cid].push({from:'me',text});inp.value='';renderDMLog();const log=$('dmLog');const typing=document.createElement('div');typing.className='dm-msg him';typing.textContent='…';log.appendChild(typing);log.scrollTop=log.scrollHeight;let reply;try{reply=GEMINI_KEY?await geminiReply(cid):personaReply(cid,text);}catch(e){reply=personaReply(cid,text);}typing.remove();DM_HISTORY[cid].push({from:'him',text:String(reply)});renderDMLog();}
+function dmSystem(cid){const c=CHARS.find(x=>x.id===cid);return `너는 여성향 연애 시뮬레이션 게임의 남자 주인공 '${c.name}'이다. 컨셉:${c.tag}, MBTI ${c.mbti}. ${c.desc} 좋아하는 것:${c.like}. 싫어하는 것:${c.dislike}. 카카오톡 대화하듯 1~2문장으로 짧고 자연스럽게, 캐릭터 말투를 끝까지 유지해서 답해라. 나레이션·행동묘사·설명 없이 대사만. 상대(플레이어)의 말에 실제로 반응하고, AI나 게임이라는 사실은 절대 언급하지 마라.`;}
+async function geminiReply(cid){const sys=dmSystem(cid);const hist=DM_HISTORY[cid].slice(-10).map(m=>({role:m.from==='me'?'user':'model',parts:[{text:m.text}]}));const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(GEMINI_KEY)}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:hist,generationConfig:{temperature:0.9,maxOutputTokens:120}})});const d=await res.json();if(!res.ok)throw new Error((d.error&&d.error.message)||'gemini error');return d.candidates[0].content.parts.map(p=>p.text).join(' ').trim();}
+function personaReply(cid){const banks={hyeong:['그랬구나, 오늘도 고생했어요. 푹 쉬어요.','무리하지 말아요, 내가 챙길게요.','그 말 들으니 다행이에요 :)','밥은 챙겨 먹었죠?'],jinha:['…그래. 별일 없으면 됐고.','흠. 나쁘지 않네.','자꾸 신경 쓰이게 하지 마.','피곤하면 일찍 자.'],jisung:['어… 그렇구나. 나도 비슷해.','음, 좀 더 얘기해줄래?','네가 말해주니까 좋다.','그거… 나도 궁금했어.'],chanhyung:['ㅋㅋㅋ 완전 웃기다','오 그거 재밌겠는데? 같이 하자','나도 지금 그 생각했어ㅋㅋ','심심한데 잘됐다, 놀자!'],seongho:['오 좋다!! 완전 응원해!!','역시 너야! 파이팅!','그 에너지 최고다 진짜','오늘도 너 덕분에 힘난다!'],seokju:['응, 잘했어. 무리 말고.','편하게 얘기해. 듣고 있어.','오래 봐도 넌 여전하네, 좋다.','늦었는데 얼른 쉬어.']};const b=banks[cid]||['응, 그렇구나.'];return b[Math.floor(Math.random()*b.length)];}
+
 renderMain();
 const params=new URLSearchParams(location.search);
 const preview=params.get('preview'), lead=params.get('lead');
