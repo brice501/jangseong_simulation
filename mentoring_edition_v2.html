@@ -64,7 +64,7 @@
   .aff>i{display:block;height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,#ff9ec4,var(--pink-d));transition:width .6s cubic-bezier(.2,.8,.2,1)}
   .aff-num{font-size:10px;color:var(--pink-d);font-weight:800;margin-top:2px}
   .aff,.aff-num{display:none}
-  .fab{position:absolute;right:16px;bottom:14px;display:flex;flex-direction:column;gap:9px;z-index:4}
+  .fab{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;display:flex;flex-direction:row;gap:10px;z-index:4}
   .top-control{position:absolute;top:14px;z-index:40;border:none;border-radius:999px;padding:9px 15px;display:none;
     background:rgba(255,255,255,.94);color:var(--pink-d);border:2px solid var(--pink);font-family:inherit;
     font-weight:900;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.10)}
@@ -83,17 +83,6 @@
   .stat-card .info{font-size:13px;line-height:1.55}
   .stat-card .info b{color:var(--pink-d)}
   .mbti{display:inline-block;background:var(--pink);color:#fff;border-radius:8px;padding:1px 8px;font-size:12px;font-weight:800;margin-left:6px}
-  /* DM */
-  .dm-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:8px}
-  .dm-tab{flex:0 0 auto;border:1.5px solid #ffd7e8;background:#fff6fb;border-radius:999px;padding:5px 13px;font-weight:800;font-size:12px;color:var(--pink-d);cursor:pointer}
-  .dm-tab.on{background:var(--pink);color:#fff;border-color:var(--pink)}
-  .dm-log{height:300px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px;background:#faf3f8;border-radius:14px}
-  .dm-msg{max-width:80%;padding:9px 12px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-  .dm-msg.me{align-self:flex-end;background:var(--pink);color:#fff;border-bottom-right-radius:4px}
-  .dm-msg.him{align-self:flex-start;background:#fff;border:1px solid #ffe0ee;border-bottom-left-radius:4px}
-  .dm-input{display:flex;gap:8px;margin-top:8px}
-  .dm-input input{flex:1;border:1.5px solid #ffcfe4;border-radius:999px;padding:10px 14px;font-family:inherit;font-size:14px}
-  .dm-key{font-size:11px;color:#a07;margin-top:8px;cursor:pointer;text-decoration:underline;text-align:center}
 
   .qlist{display:grid;gap:10px}
   .qitem{display:flex;align-items:center;gap:12px;background:#fff6fb;border:1.5px solid #ffe0ee;border-radius:14px;padding:12px 14px;cursor:pointer;transition:.15s}
@@ -277,7 +266,6 @@
     <div class="fab">
       <button class="btn" onclick="openQuests()">📋 퀘스트</button>
       <button class="btn ghost" onclick="openStatus()">💬 상태창</button>
-      <button class="btn navy" onclick="openDM()">💌 DM</button>
     </div>
   </section>
 
@@ -316,13 +304,6 @@
   <div class="overlay" id="ovQuest"><div class="panel"><button class="x" onclick="close_('ovQuest')">×</button>
     <h2>📋 스무살 로망 퀘스트</h2>
     <div class="qlist" id="questList"></div></div></div>
-
-  <div class="overlay" id="ovDM"><div class="panel"><button class="x" onclick="close_('ovDM')">×</button>
-    <h2>💌 DM — 남주와 대화</h2>
-    <div class="dm-tabs" id="dmTabs"></div>
-    <div class="dm-log" id="dmLog"></div>
-    <div class="dm-input"><input id="dmText" placeholder="메시지 입력…" onkeydown="if(event.key==='Enter')sendDM()"><button class="btn" onclick="sendDM()">전송</button></div>
-    <div class="dm-key" id="dmKeyBtn" onclick="setGeminiKey()"></div></div></div>
 
   <div class="toast" id="toast"></div>
 </div>
@@ -470,22 +451,6 @@ let introIdx=0;
 function startIntro(){introIdx=0;go('intro');renderIntro();}
 function renderIntro(){const c=CHARS[introIdx];$('introFig').innerHTML=imgTag(c.id,'smile');$('introCard').innerHTML=`<div class="in-name">${c.name} <span>· ${c.tag} · ${c.mbti}</span></div><div class="in-row"><b>💙 좋아하는 것</b>${c.like}</div><div class="in-row"><b>💔 싫어하는 것</b>${c.dislike}</div>`;$('introCount').textContent=`${introIdx+1} / ${CHARS.length}`;$('introNext').textContent=introIdx<CHARS.length-1?'다음 ▶':'게임 시작 ▶';}
 function introNext(){if(introIdx<CHARS.length-1){introIdx++;renderIntro();}else{renderMain();go('main');}}
-
-/* ===== DM (6인 페르소나 대화 · 제미나이 선택) ===== */
-const DM_HISTORY={};CHARS.forEach(c=>DM_HISTORY[c.id]=[]);
-let dmTarget=CHARS[0].id;
-let GEMINI_KEY=(function(){try{return localStorage.getItem('gemini_key')||"";}catch(e){return"";}})();
-function openDM(){renderDMTabs();switchDM(dmTarget);updateKeyBtn();open_('ovDM');}
-function updateKeyBtn(){$('dmKeyBtn').textContent=GEMINI_KEY?'🔑 제미나이 연결됨 · 키 변경':'🔑 제미나이 API 키 설정 (없으면 기본 답변으로 작동)';}
-function setGeminiKey(){const k=prompt('구글 제미나이 API 키를 입력하세요.\n(비워두면 기본 답변으로 작동. 키는 이 브라우저에만 저장돼요.)',GEMINI_KEY||'');if(k===null)return;GEMINI_KEY=k.trim();try{if(GEMINI_KEY)localStorage.setItem('gemini_key',GEMINI_KEY);else localStorage.removeItem('gemini_key');}catch(e){}updateKeyBtn();toast(GEMINI_KEY?'제미나이 연결됨 ✨':'기본 답변 모드');}
-function renderDMTabs(){const t=$('dmTabs');t.innerHTML='';CHARS.forEach(c=>{const b=document.createElement('div');b.className='dm-tab'+(c.id===dmTarget?' on':'');b.textContent=c.name;b.onclick=()=>switchDM(c.id);t.appendChild(b);});}
-function switchDM(cid){dmTarget=cid;renderDMTabs();const c=CHARS.find(x=>x.id===cid);if(DM_HISTORY[cid].length===0)DM_HISTORY[cid].push({from:'him',text:firstDM(cid)});renderDMLog();$('dmText').placeholder=`${c.name}에게 메시지…`;}
-function firstDM(cid){return {hyeong:'오늘 하루 어땠어요? 무리한 건 없고요?',jinha:'…자냐. 별건 아니고.',jisung:'그… 자기 전에 물 마셨어? 그냥 궁금해서.',chanhyung:'야야 지금 뭐해?ㅋㅋ 나 심심해',seongho:'오늘도 파이팅!! 네 생각나서 연락했어',seokju:'집 잘 들어갔어? 늦었더라.'}[cid]||'안녕!';}
-function renderDMLog(){const log=$('dmLog');log.innerHTML='';DM_HISTORY[dmTarget].forEach(m=>{const d=document.createElement('div');d.className='dm-msg '+(m.from==='me'?'me':'him');d.textContent=m.text;log.appendChild(d);});log.scrollTop=log.scrollHeight;}
-async function sendDM(){const inp=$('dmText');const text=inp.value.trim();if(!text)return;const cid=dmTarget;DM_HISTORY[cid].push({from:'me',text});inp.value='';renderDMLog();const log=$('dmLog');const typing=document.createElement('div');typing.className='dm-msg him';typing.textContent='…';log.appendChild(typing);log.scrollTop=log.scrollHeight;let reply;try{reply=GEMINI_KEY?await geminiReply(cid):personaReply(cid,text);}catch(e){reply=personaReply(cid,text);}typing.remove();DM_HISTORY[cid].push({from:'him',text:String(reply)});renderDMLog();}
-function dmSystem(cid){const c=CHARS.find(x=>x.id===cid);return `너는 여성향 연애 시뮬레이션 게임의 남자 주인공 '${c.name}'이다. 컨셉:${c.tag}, MBTI ${c.mbti}. ${c.desc} 좋아하는 것:${c.like}. 싫어하는 것:${c.dislike}. 카카오톡 대화하듯 1~2문장으로 짧고 자연스럽게, 캐릭터 말투를 끝까지 유지해서 답해라. 나레이션·행동묘사·설명 없이 대사만. 상대(플레이어)의 말에 실제로 반응하고, AI나 게임이라는 사실은 절대 언급하지 마라.`;}
-async function geminiReply(cid){const sys=dmSystem(cid);const hist=DM_HISTORY[cid].slice(-10).map(m=>({role:m.from==='me'?'user':'model',parts:[{text:m.text}]}));const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(GEMINI_KEY)}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:hist,generationConfig:{temperature:0.9,maxOutputTokens:120}})});const d=await res.json();if(!res.ok)throw new Error((d.error&&d.error.message)||'gemini error');return d.candidates[0].content.parts.map(p=>p.text).join(' ').trim();}
-function personaReply(cid){const banks={hyeong:['그랬구나, 오늘도 고생했어요. 푹 쉬어요.','무리하지 말아요, 내가 챙길게요.','그 말 들으니 다행이에요 :)','밥은 챙겨 먹었죠?'],jinha:['…그래. 별일 없으면 됐고.','흠. 나쁘지 않네.','자꾸 신경 쓰이게 하지 마.','피곤하면 일찍 자.'],jisung:['어… 그렇구나. 나도 비슷해.','음, 좀 더 얘기해줄래?','네가 말해주니까 좋다.','그거… 나도 궁금했어.'],chanhyung:['ㅋㅋㅋ 완전 웃기다','오 그거 재밌겠는데? 같이 하자','나도 지금 그 생각했어ㅋㅋ','심심한데 잘됐다, 놀자!'],seongho:['오 좋다!! 완전 응원해!!','역시 너야! 파이팅!','그 에너지 최고다 진짜','오늘도 너 덕분에 힘난다!'],seokju:['응, 잘했어. 무리 말고.','편하게 얘기해. 듣고 있어.','오래 봐도 넌 여전하네, 좋다.','늦었는데 얼른 쉬어.']};const b=banks[cid]||['응, 그렇구나.'];return b[Math.floor(Math.random()*b.length)];}
 
 renderMain();
 const params=new URLSearchParams(location.search);
