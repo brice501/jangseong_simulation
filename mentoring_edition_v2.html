@@ -124,7 +124,8 @@
   .dialog.pick{top:54px;overflow:auto;display:flex;flex-direction:column}
   .choices.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;flex:1;align-content:start}
   .dialog.pick .choice{font-size:17px;font-weight:700;padding:8px 16px;min-height:78px;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:16px;line-height:1.45}
-  .dialog.pick .choice b{display:block}
+  .dialog.pick .choice .pick-line{display:block;width:100%}
+  .dialog.pick .choice b{white-space:nowrap}
   .dialog.pick .line{font-size:16px}
   .vote{margin-top:8px;background:#eef4ff;border:1.5px solid #cfe0ff;border-radius:12px;padding:10px 13px;font-size:13px;color:var(--navy)}
   .vote .dots{font-size:17px;letter-spacing:2px;margin-top:3px}
@@ -410,7 +411,7 @@ function continueQuest(){$('narration').classList.remove('active');hideFocus();e
   $('soloFig').style.display='none';renderScene(null);$('dWho').textContent='상황';$('dLine').textContent=q.scene;const ch=$('dChoices');ch.innerHTML='';
   if(q.mode==="mapped"){q.options.forEach(op=>{const b=document.createElement('button');b.className='choice';b.textContent=op[2];b.onclick=()=>resolveMapped(op);ch.appendChild(b);});enterPickMode();}
   else if(q.final){const top=topAff();$('dLine').textContent='부스 마감 직전, 누군가 뒤에서 조심스럽게 등을 두드린다. 돌아보자 가장 오래 마음이 쌓인 사람이 서 있다.';pickLead(top);}
-  else{CHARS.forEach(c=>{const line=q.lines[c.id];const b=document.createElement('button');b.className='choice';b.innerHTML=`<b>${c.name}</b> — ${line[1]}`;b.onclick=()=>pickLead(c.id);ch.appendChild(b);});enterPickMode();}
+  else{CHARS.forEach(c=>{const line=q.lines[c.id];const b=document.createElement('button');b.className='choice';b.innerHTML=`<span class="pick-line"><b>${c.name}</b> — ${line[1]}</span>`;b.onclick=()=>pickLead(c.id);ch.appendChild(b);});enterPickMode();}
 }
 
 function pickSolo(op){exitPickMode();firstDream=op[0];$('dLine').textContent=op[1];$('dChoices').innerHTML='';completeQuest(null,12);}
